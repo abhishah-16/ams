@@ -43,7 +43,7 @@ app.get("/users/:name",(req,res)=>{
     })
 })
 
-app.post("/task",(req,res)=>{
+app.post("/tasks",(req,res)=>{
     const task = new Task(req.body)
     task.save().then(()=>{
         res.status(201).send(task)
@@ -53,6 +53,27 @@ app.post("/task",(req,res)=>{
     console.log("Task : ",task)
 })
 
+app.get("/tasks",(req,res)=>{
+    Task.find({}).then((tasks)=>{
+        res.status(200).send(tasks)
+    })
+    .catch((err)=>{
+        res.status(500).send(err)
+    })
+})
+
+app.get("/tasks/:id",(req,res)=>{
+    const _id = req.params.id
+    console.log("_id : ",_id)
+    Task.findById(_id).then((tasks)=>{
+        if(!tasks) 
+            return res.status(404).send("Task not found")
+        res.status(200).send(tasks) 
+    })
+    .catch((err)=>{
+        res.status(400).send(err)
+    })
+})
 
 app.listen(port,()=>{
     console.log("server is running on port : ",port)
