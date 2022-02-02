@@ -3,6 +3,7 @@ const app = express()
 require('./db/mongoose')
 const User = require('./models/user')
 const Task = require('./models/task')
+//const { findByIdAndUpdate } = require("./models/user")
 const port = process.env.PORT || 3000;
 
 app.use(express.json())
@@ -51,6 +52,23 @@ app.get("/users/:name", async (req, res) => {
     }
 })
 
+app.patch("/users/:id", async (req, res) => {
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ["name", "email", "password", "age"]
+    const isValidUpdate = updates.every((update) => allowedUpdates.includes(update))
+    if (!isValidUpdate)
+        return res.status(400).send("Invalid Updates..")
+    console.log("_id : ", req.params.id)
+    try {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+        if (!user)
+            return res.status(404).send("User not found")
+        res.status(200).send(user)
+    } catch (err) {
+        res.status(400).send(err.message)
+    }
+})
+
 app.post("/tasks", async (req, res) => {
     const task = new Task(req.body)
     try {
@@ -83,6 +101,23 @@ app.get("/tasks/:id", async (req, res) => {
 
     } catch (err) {
         res.status(400).send(err)
+    }
+})
+
+app.patch("/tasks/:id", async (req, res) => {
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ["description", "completed"]
+    const isValidUpdate = updates.every((update) => allowedUpdates.includes(update))
+    if (!isValidUpdate)
+        return res.status(400).send("Invalid Updates..")
+    console.log("_id : ", req.params.id)
+    try {
+        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+        if (!task)
+            return res.status(404).send("Task not found")
+        res.status(200).send(task)
+    } catch (err) {
+        res.status(400).send(err.message)
     }
 })
 
