@@ -21,6 +21,28 @@ app.post("/users",(req,res)=>{
     console.log("User : ",user)
 })
 
+app.get("/users",(req,res)=>{
+    User.find({}).then((users)=>{
+        res.status(200).send(users)
+    })
+    .catch((err)=>{
+        res.status(500).send(err)
+    })
+})
+
+app.get("/users/:name",(req,res)=>{
+    const username = req.params.name
+    console.log("username : ",username)
+    User.find({name:username}).then((users)=>{
+        if(!users.length) 
+            return res.status(404).send("User not found")
+        res.status(200).send(users) 
+    })
+    .catch((err)=>{
+        res.status(400).send(err)
+    })
+})
+
 app.post("/task",(req,res)=>{
     const task = new Task(req.body)
     task.save().then(()=>{
