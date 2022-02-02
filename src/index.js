@@ -7,74 +7,85 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json())
 
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
     res.send("welcome to task manager")
 })
 
-app.post("/users",(req,res)=>{
+app.post("/users", async (req, res) => {
     const user = new User(req.body)
-    user.save().then(()=>{
+    // // normal promise syntax
+    // user.save().then(()=>{
+    //     res.status(201).send(user)
+    // }).catch((err)=>{
+    //     res.status(400).send(err.message)
+    // })
+    // use async/await in code
+    try {
+        await user.save()
         res.status(201).send(user)
-    }).catch((err)=>{
+    } catch (err) {
         res.status(400).send(err.message)
-    })
-    console.log("User : ",user)
+    }
+    console.log("User : ", user)
 })
 
-app.get("/users",(req,res)=>{
-    User.find({}).then((users)=>{
+app.get("/users", async (req, res) => {
+    try {
+        const users = await User.find({})
         res.status(200).send(users)
-    })
-    .catch((err)=>{
+    } catch (err) {
         res.status(500).send(err)
-    })
+    }
 })
 
-app.get("/users/:name",(req,res)=>{
+app.get("/users/:name", async (req, res) => {
     const username = req.params.name
-    console.log("username : ",username)
-    User.find({name:username}).then((users)=>{
-        if(!users.length) 
+    console.log("username : ", username)
+    try {
+        const users = await User.find({ name: username })
+        if (!users.length)
             return res.status(404).send("User not found")
-        res.status(200).send(users) 
-    })
-    .catch((err)=>{
+        res.status(200).send(users)
+    } catch (err) {
         res.status(400).send(err)
-    })
+    }
 })
 
-app.post("/tasks",(req,res)=>{
+app.post("/tasks", async (req, res) => {
     const task = new Task(req.body)
-    task.save().then(()=>{
+    try {
+        await task.save()
         res.status(201).send(task)
-    }).catch((err)=>{
+
+    } catch (err) {
         res.status(400).send(err.message)
-    })
-    console.log("Task : ",task)
+    }
+    console.log("Task : ", task)
 })
 
-app.get("/tasks",(req,res)=>{
-    Task.find({}).then((tasks)=>{
+app.get("/tasks", async (req, res) => {
+    try {
+        const tasks = await Task.find({})
         res.status(200).send(tasks)
-    })
-    .catch((err)=>{
+    } catch (err) {
         res.status(500).send(err)
-    })
+    }
 })
 
-app.get("/tasks/:id",(req,res)=>{
+app.get("/tasks/:id", async (req, res) => {
     const _id = req.params.id
-    console.log("_id : ",_id)
-    Task.findById(_id).then((tasks)=>{
-        if(!tasks) 
+    console.log("_id : ", _id)
+    try {
+        const tasks = await Task.findById(_id)
+        if (!tasks)
             return res.status(404).send("Task not found")
-        res.status(200).send(tasks) 
-    })
-    .catch((err)=>{
+        res.status(200).send(tasks)
+
+    } catch (err) {
         res.status(400).send(err)
-    })
+    }
 })
 
-app.listen(port,()=>{
-    console.log("server is running on port : ",port)
+app.listen(port, () => {
+    console.log("server is running on port : ", port)
 })
