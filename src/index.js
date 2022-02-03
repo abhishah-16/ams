@@ -18,3 +18,11 @@ app.listen(port, () => {
     console.log("server is running on port : ", port)
 })
 
+// const jwt = require('jsonwebtoken')
+// const myf = async (password) => {
+//     let token = await jwt.sign({_id:'jay patel'},'thisismynewsecretgenerator',{expiresIn:'1 seconds'})
+//     console.log("token :",token)
+//     token = await jwt.verify(token,'thisismynewsecretgenerator')
+//     console.log("token :",token._id)    
+// }  
+// myf()

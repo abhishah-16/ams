@@ -15,20 +15,21 @@ router.post("/users", async (req, res) => {
     // use async/await in code
     try {
         await user.save()
-        res.status(201).send(user)
+        const token = await user.generateAuthToken()
+        res.status(201).send({user , token})
     } catch (err) {
         res.status(400).send(err.message)
     }
     console.log("User : ", user)
 })
 
-router.post("/users/login",async (req,res) => {
+router.post("/users/login", async (req, res) => {
 
-    try{
-        const user = await User.findByCredentials(req.body.email,req.body.password)
-        console.log("Login user :",user)
-        res.status(200).send(user)
-    }catch(err){
+    try {
+        const user = await User.findByCredentials(req.body.email, req.body.password)
+        const token = await user.generateAuthToken()
+        res.status(200).send({ user, token })
+    } catch (err) {
         res.status(400).send(err.message)
     }
 })
@@ -65,7 +66,7 @@ router.patch("/users/:id", async (req, res) => {
     try {
 
         const user = await User.findById(req.params.id)
-        updates.forEach((update)=> user[update] = req.body[update])
+        updates.forEach((update) => user[update] = req.body[update])
         await user.save()
         //const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
         if (!user)
