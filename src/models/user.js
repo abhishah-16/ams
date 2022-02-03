@@ -2,6 +2,7 @@ const mongooese = require("mongoose")
 const validator = require("validator")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const Task = require('./task')
 const userSchema = new mongooese.Schema(
     {
         name: {
@@ -95,7 +96,13 @@ userSchema.pre('save', async function (next) {
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
+    next()
+})
 
+//Use this middleware to delete all tasks of user after user gets deleted
+userSchema.pre('remove', async function(next){
+    const user = this
+    await Task.deleteMany({owner:user._id})
     next()
 })
 
