@@ -11,7 +11,7 @@ const userSchema = new mongooese.Schema(
         },
         email: {
             type: String,
-            unique:true,
+            unique: true,
             required: true,
             trim: true,
             lowercase: true,
@@ -37,22 +37,34 @@ const userSchema = new mongooese.Schema(
                 if (v.toLowerCase().includes("password")) throw new Error("can't give 'password' in password")
             }
         },
-        tokens:[{
-            token:{
-            type:String,
-            required:true
-        }
-    }]
+        tokens: [{
+            token: {
+                type: String,
+                required: true
+            }
+        }]
     }
 )
 
-//create method for generating auth token for user login
-userSchema.methods.generateAuthToken = async function (){
+// create method to get only public details of logged user
+//1) userSchema.methods.getPublicProfile =  function () {
+userSchema.methods.toJSON =  function () {
     const user = this
-    const token = await jwt.sign({_id:user._id.toString()},'thisismysecretforkwttoken')
-    user.tokens = user.tokens.concat({token})
+    const userObject = user.toObject()
+
+    delete userObject.password
+    delete userObject.tokens
+
+    return userObject
+}
+
+//create method for generating auth token for user login
+userSchema.methods.generateAuthToken = async function () {
+    const user = this
+    const token = await jwt.sign({ _id: user._id.toString() }, 'thisismysecretforkwttoken')
+    user.tokens = user.tokens.concat({ token })
     await user.save()
-    return token 
+    return token
 }
 
 //create findByCredentials method in User schema
@@ -78,7 +90,7 @@ userSchema.pre('save', async function (next) {
     }
 
     next()
-}) 
+})
 
 const User = mongooese.model('User', userSchema)
 
