@@ -46,9 +46,16 @@ const userSchema = new mongooese.Schema(
     }
 )
 
+//create virtual to make relationship between user and task
+userSchema.virtual('tasks',{
+    ref:"Task",
+    localField:"_id",
+    foreignField:"owner"
+})
+
 // create method to get only public details of logged user
 //1) userSchema.methods.getPublicProfile =  function () {
-userSchema.methods.toJSON =  function () {
+userSchema.methods.toJSON  =  function () {
     const user = this
     const userObject = user.toObject()
 

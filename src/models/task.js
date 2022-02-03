@@ -9,6 +9,11 @@ const task = mongooese.model('Task',{
     completed : {
         type:Boolean,
         default:false
+    },
+    owner:{
+        type:mongooese.Schema.Types.ObjectId,
+        required:true,
+        ref:'User'
     }
 })
 module.exports = task
