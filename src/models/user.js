@@ -10,6 +10,7 @@ const userSchema = new mongooese.Schema(
         },
         email: {
             type: String,
+            unique:true,
             required: true,
             trim: true,
             lowercase: true,
@@ -38,11 +39,26 @@ const userSchema = new mongooese.Schema(
     }
 )
 
-userSchema.pre('save',async function(next){
+//create findByCredentials method in User schema
+userSchema.statics.findByCredentials = async (email, password) => {
+    const user = await User.findOne({ email })
+    if (!user)
+        throw new Error("Invalid email or password")
+
+    const isMatch = await bcrypt.compare(password, user.password)
+
+    if (!isMatch)
+        throw new Error("Invalid email or password")
+    console.log("user : ", user.name)
+    return user
+}
+
+//Hash plain password using bcrypt and save in DB
+userSchema.pre('save', async function (next) {
     const user = this
     console.log("just befor saving")
-    if(user.isModified('password')){
-        user.password = await bcrypt.hash(user.password , 8)
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
     }
 
     next()
