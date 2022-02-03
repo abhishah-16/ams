@@ -4,15 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start":"npm src/index.js",
-    "dev":"nodemon src/index.js"
+    "start": "npm src/index.js",
+    "dev": "nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "express": "^4.17.2",
     "mongodb": "^4.3.1",
     "mongoose": "^6.1.9",
+    "nodemon": "^2.0.15",
     "validator": "^13.7.0"
   },
   "devDependencies": {
