@@ -5,6 +5,14 @@ const port = process.env.PORT || 3000;
 const userRouter = require('./routers/userRoute')
 const taskRouter = require('./routers/taskRoute')
 
+const maintainanceStatus = false
+app.use((req,res,next)=>{
+    if(maintainanceStatus)
+        res.status(504).send("Currently this site is under maintainance , please try again some time.")
+    next()
+}) 
+
+
 app.use(express.json())
 app.use(userRouter)
 app.use(taskRouter)
@@ -17,12 +25,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
     console.log("server is running on port : ", port)
 })
-
-// const jwt = require('jsonwebtoken')
-// const myf = async (password) => {
-//     let token = await jwt.sign({_id:'jay patel'},'thisismynewsecretgenerator',{expiresIn:'1 seconds'})
-//     console.log("token :",token)
-//     token = await jwt.verify(token,'thisismynewsecretgenerator')
-//     console.log("token :",token._id)    
-// }  
-// myf()

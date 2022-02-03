@@ -2,25 +2,17 @@ const express = require("express")
 const { findById } = require("../models/user")
 const router = new express.Router()
 const User = require('../models/user')
-
+const auth = require("../middlewares/auth")
 
 router.post("/users", async (req, res) => {
     const user = new User(req.body)
-    // // normal promise syntax
-    // user.save().then(()=>{
-    //     res.status(201).send(user)
-    // }).catch((err)=>{
-    //     res.status(400).send(err.message)
-    // })
-    // use async/await in code
     try {
         await user.save()
         const token = await user.generateAuthToken()
-        res.status(201).send({user , token})
+        res.status(201).send({ user, token })
     } catch (err) {
         res.status(400).send(err.message)
     }
-    console.log("User : ", user)
 })
 
 router.post("/users/login", async (req, res) => {
@@ -34,13 +26,34 @@ router.post("/users/login", async (req, res) => {
     }
 })
 
-router.get("/users", async (req, res) => {
+router.post('/users/logout', auth, async (req, res) => {
+
     try {
-        const users = await User.find({})
-        res.status(200).send(users)
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.user.save()
+        res.status(200).send("Successfully logout..")
     } catch (err) {
-        res.status(500).send(err)
+        res.status(500).send("Error while loging out..")
     }
+})
+
+router.post('/users/logoutAll', auth, async (req, res) => {
+
+    try {
+        req.user.tokens = []
+        await req.user.save()
+        res.status(200).send("Successfully logout from All accounts..")
+    } catch (err) {
+        res.status(500).send("Error while loging out from All accounts..")
+    }
+
+})
+
+
+router.get("/users/me", auth, async (req, res) => {
+    res.status(200).send(req.user)
 })
 
 router.get("/users/:name", async (req, res) => {
