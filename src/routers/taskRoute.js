@@ -1,9 +1,10 @@
 const express = require("express")
 const router = new express.Router()
 const Task = require('../models/task')
-const auth = require('../middlewares/auth')
+const {authToken} = require('../middlewares/authRole')
 
-router.post("/tasks", auth, async (req, res) => {
+
+router.post("/tasks", authToken, async (req, res) => {
     //const task = new Task(req.body)
     console.log("task created user : ", req.user)
     const task = new Task({
@@ -21,7 +22,7 @@ router.post("/tasks", auth, async (req, res) => {
     console.log("Task : ", task)
 })
 
-router.get("/tasks", auth, async (req, res) => {
+router.get("/tasks", authToken, async (req, res) => {
     try {
         //const tasks = await Task.find({owner:req.user._id})
         //below is alternative login to make relationship between task and user
@@ -32,7 +33,7 @@ router.get("/tasks", auth, async (req, res) => {
     }
 })
 
-router.get("/tasks/:id", auth, async (req, res) => {
+router.get("/tasks/:id", authToken, async (req, res) => {
     const _id = req.params.id
     console.log("_id : ", _id, req.user._id)
     try {
@@ -47,7 +48,7 @@ router.get("/tasks/:id", auth, async (req, res) => {
     }
 })
 
-router.patch("/tasks/:id", auth, async (req, res) => {
+router.patch("/tasks/:id", authToken, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ["description", "completed"]
     const isValidUpdate = updates.every((update) => allowedUpdates.includes(update))
@@ -70,7 +71,7 @@ router.patch("/tasks/:id", auth, async (req, res) => {
     }
 })
 
-router.delete("/tasks/:id", auth ,async (req, res) => {
+router.delete("/tasks/:id", authToken ,async (req, res) => {
     try {
         const task = await Task.findOneAndDelete({_id:req.params.id , owner:req.user._id}) 
         if (!task)

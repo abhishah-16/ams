@@ -4,7 +4,7 @@ require('./db/mongoose')
 const port = process.env.PORT || 3000;
 const userRouter = require('./routers/userRoute')
 const taskRouter = require('./routers/taskRoute')
-
+const adminRoute = require('./routers/adminRoutes')
 const maintainanceStatus = false
 app.use((req,res,next)=>{
     if(maintainanceStatus)
@@ -15,6 +15,7 @@ app.use((req,res,next)=>{
                 
 app.use(express.json())
 app.use(userRouter)
+app.use(adminRoute)
 app.use(taskRouter)
 
 

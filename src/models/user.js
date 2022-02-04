@@ -29,6 +29,22 @@ const userSchema = new mongooese.Schema(
                 if (v < 0) throw new Error('Age must be a positive number')
             }
         },
+        role:{
+            type:String,
+            required:true,
+            trim:true
+            // validate(v) {
+            //     if (!v.toLowerCase().includes("user") || 
+            //         !v.toLowerCase().includes("manager") || 
+            //         !v.toLowerCase().includes("organizer") ||
+            //         !v.toLowerCase().includes("admin")) throw new Error("Role doesn't exist..")
+            // }
+        },
+        verificationStatus:{
+            type:String,
+            trim:true,
+            default:true
+        },
         password: {
             type: String,
             trim: true,
@@ -96,6 +112,11 @@ userSchema.pre('save', async function (next) {
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
+    if(user.role=="manager"){
+        user.verificationStatus = false;
+    }
+    else
+        user.verificationStatus = true
     next()
 })
 
