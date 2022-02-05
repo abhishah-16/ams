@@ -22,12 +22,14 @@ const authToken = async (req, res, next) => {
 }
 
 const isManagerSignup = async(req,res,next) => {
+    if(req.body.role=="manager"){
     const requiredFields = ['name','email','password','role','auditoriumName','address','city','capacity']
     const manager = await Object.keys(req.body)
     const isValidManager = await requiredFields.every((field) => manager.includes(field))
     if(!isValidManager){
         return res.status(400).send("Please fill all required fields..")
     }
+}
     next()
 }
 

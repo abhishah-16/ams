@@ -3,6 +3,7 @@ const { findById } = require("../models/user")
 const router = new express.Router()
 const User = require('../models/user')
 const Auditorium = require('../models/auditorium')
+const {sendWelcomeMail,sendVerificationPendingMail} = require('../emails/accounts')
 const { authToken, isAdmin, isManagerSignup } = require('../middlewares/authRole')
 
 
@@ -18,15 +19,20 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
     try {
         await user.save()
         const token = await user.generateAuthToken()
-        const auditorium = new Auditorium({
-            auditoriumName:req.body.auditoriumName,
-            address:req.body.address,
-            capacity:req.body.capacity,
-            city:req.body.city,
-            manager_id:user._id
-        })
-        await auditorium.save()
-        res.status(201).send({ username:user.name, auditoriumname : auditorium.auditoriumName , token })
+        if (req.body.role == "manager") {
+            const auditorium = new Auditorium({
+                auditoriumName: req.body.auditoriumName,
+                address: req.body.address,
+                capacity: req.body.capacity,
+                city: req.body.city,
+                manager_id: user._id
+            })
+            await auditorium.save()
+            sendVerificationPendingMail(user.email,user.name)
+            return res.status(201).send({ username: user.name, auditoriumname: auditorium.auditoriumName, token })
+        }
+            sendWelcomeMail(user.email,user.name)
+            res.status(201).send(user)
     } catch (err) {
         res.status(400).send(err.message)
     }
