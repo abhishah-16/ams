@@ -2,17 +2,31 @@ const express = require("express")
 const { findById } = require("../models/user")
 const router = new express.Router()
 const User = require('../models/user')
-const { authToken, isAdmin  } = require('../middlewares/authRole')
+const Auditorium = require('../models/auditorium')
+const { authToken, isAdmin, isManagerSignup } = require('../middlewares/authRole')
 
 
-router.post("/users/signup", async (req, res) => {
+router.post("/users/signup", isManagerSignup, async (req, res) => {
+    console.log("valids fields..")
     const user = new User({
-        ...req.body,
+        //...req.body,
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        role: req.body.role
     })
     try {
         await user.save()
         const token = await user.generateAuthToken()
-        res.status(201).send({ user, token })
+        const auditorium = new Auditorium({
+            auditoriumName:req.body.auditoriumName,
+            address:req.body.address,
+            capacity:req.body.capacity,
+            city:req.body.city,
+            manager_id:user._id
+        })
+        await auditorium.save()
+        res.status(201).send({ username:user.name, auditoriumname : auditorium.auditoriumName , token })
     } catch (err) {
         res.status(400).send(err.message)
     }

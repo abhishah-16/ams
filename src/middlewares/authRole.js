@@ -20,6 +20,17 @@ const authToken = async (req, res, next) => {
     }
     next()
 }
+
+const isManagerSignup = async(req,res,next) => {
+    const requiredFields = ['name','email','password','role','auditoriumName','address','city','capacity']
+    const manager = await Object.keys(req.body)
+    const isValidManager = await requiredFields.every((field) => manager.includes(field))
+    if(!isValidManager){
+        return res.status(400).send("Please fill all required fields..")
+    }
+    next()
+}
+
 const isManager = async (req, res, next) => {
     console.log("ROle m:",req.user.role)
     if (req.user.role !== "manager")
@@ -47,4 +58,4 @@ const isOrganizer = async (req, res, next) => {
 }
 
 //const auth =
-module.exports =  { authToken, isAdmin, isManager, isUser, isOrganizer }
+module.exports =  { authToken, isAdmin, isManager, isUser, isOrganizer , isManagerSignup}

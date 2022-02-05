@@ -64,10 +64,10 @@ const userSchema = new mongooese.Schema(
 )
 
 //create virtual to make relationship between user and task
-userSchema.virtual('tasks',{
-    ref:"Task",
+userSchema.virtual('auditorium',{
+    ref:"Auditorium",
     localField:"_id",
-    foreignField:"owner"
+    foreignField:"manager_id"
 })
 
 // create method to get only public details of logged user
@@ -113,10 +113,10 @@ userSchema.pre('save', async function (next) {
         user.password = await bcrypt.hash(user.password, 8)
     }
     if(user.role=="manager"){
-        user.verificationStatus = false;
+        user.verificationStatus = "pending";
     }
     else
-        user.verificationStatus = true
+        user.verificationStatus = "true"
     next()
 })
 
