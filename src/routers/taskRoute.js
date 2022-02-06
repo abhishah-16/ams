@@ -6,7 +6,7 @@ const {authToken} = require('../middlewares/authRole')
 
 router.post("/tasks", authToken, async (req, res) => {
     //const task = new Task(req.body)
-    console.log("task created user : ", req.user)
+    //console.log("task created user : ", req.user)
     const task = new Task({
         ...req.body,
         owner: req.user._id
@@ -19,7 +19,7 @@ router.post("/tasks", authToken, async (req, res) => {
     } catch (err) {
         res.status(400).send(err.message)
     }
-    console.log("Task : ", task)
+    //console.log("Task : ", task)
 })
 
 router.get("/tasks", authToken, async (req, res) => {

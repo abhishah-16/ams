@@ -4,7 +4,7 @@ const User = require('../models/user')
 const Auditorium = require('../models/auditorium')
 const { authToken, isAdmin } = require("../middlewares/authRole")
 const { sendVerificationRejectedMail, sendVerificationAcceptedMail } = require("../emails/accounts")
-router.get("/users/pendingList", [authToken, isAdmin], async (req, res) => {
+router.get("/users/managerList", [authToken, isAdmin], async (req, res) => {
     try {
         const status = req.query.status
         var pendingList = []
@@ -26,7 +26,7 @@ router.post('/users/setManagerStatus', [authToken, isAdmin], async (req, res) =>
     try {
         const Updatedmanager = await User.findByIdAndUpdate(req.body.managerId, { verificationStatus: req.body.verificationStatus }, { new: true, runValidators: true })
         if (Updatedmanager) {
-            if (Updatedmanager.verificationStatus)
+            if (Updatedmanager.verificationStatus=="true")
                 sendVerificationAcceptedMail(Updatedmanager.email, Updatedmanager.name)
             else
                 sendVerificationRejectedMail(Updatedmanager.email, Updatedmanager.name)

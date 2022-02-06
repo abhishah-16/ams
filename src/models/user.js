@@ -101,14 +101,14 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
     if (!isMatch)
         throw new Error("Invalid email or password")
-    console.log("user : ", user.name)
+    //console.log("user : ", user.name)
     return user
 }
 
 //Hash plain password using bcrypt and save in DB
 userSchema.pre('save', async function (next) {
     const user = this
-    console.log("just befor saving")
+    //console.log("just befor saving")
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }

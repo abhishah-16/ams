@@ -41,8 +41,9 @@ const sendVerificationAcceptedMail = (email, name) => {
 const sendVerificationRejectedMail = (email, name) => {
     sgmail.send({
         to: email,
-        from: "pateljaykjp1@gmailc.com",
-        subject: "Regarding Rejected Request"
+        from: "pateljaykjp1@gmail.com",
+        subject: "Regarding Rejected Request",
+        text:`Hello ${name}, we have seen your request and sorry to say you that your request is not accepted.\nI hope to see you again , Thank you.`
     })
 }
 module.exports = {
