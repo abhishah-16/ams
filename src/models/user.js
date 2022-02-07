@@ -108,7 +108,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 //Hash plain password using bcrypt and save in DB
 userSchema.pre('save', async function (next) {
     const user = this
-    console.log("just befor saving")
+    console.log("just before saving")
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
@@ -117,7 +117,7 @@ userSchema.pre('save', async function (next) {
     }
     else
         user.verificationStatus = "true"
-    next()
+    next();
 })
 
 //Use this middleware to delete all tasks of user after user gets deleted

@@ -6,27 +6,28 @@ const Auditorium = require('../models/auditorium')
 const { authToken, isAdmin, isManagerSignup } = require('../middlewares/authRole')
 
 
-router.post("/users/signup", isManagerSignup, async (req, res) => {
+router.post("/users/signup", async (req, res) => {
     console.log("valids fields..")
     const user = new User({
         //...req.body,
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
+        age: req.body.age,
         role: req.body.role
     })
     try {
         await user.save()
         const token = await user.generateAuthToken()
-        const auditorium = new Auditorium({
-            auditoriumName:req.body.auditoriumName,
-            address:req.body.address,
-            capacity:req.body.capacity,
-            city:req.body.city,
-            manager_id:user._id
-        })
-        await auditorium.save()
-        res.status(201).send({ username:user.name, auditoriumname : auditorium.auditoriumName , token })
+        // const auditorium = new Auditorium({
+        //     auditoriumName:req.body.auditoriumName,
+        //     address:req.body.address,
+        //     capacity:req.body.capacity,
+        //     city:req.body.city,
+        //     manager_id:user._id
+        // })
+        // await auditorium.save()
+        res.status(201).send({ username:user.name, /*auditoriumname : auditorium.auditoriumName ,*/ token })
     } catch (err) {
         res.status(400).send(err.message)
     }

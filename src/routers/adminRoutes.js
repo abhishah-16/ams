@@ -3,18 +3,19 @@ const router = new express.Router()
 const User = require('../models/user')
 const Auditorium = require('../models/auditorium')
 const { authToken, isAdmin } = require("../middlewares/authRole")
-router.get("/users/pendingList", [authToken, isAdmin], async (req, res) => {
+router.get("/users/pendingList",[authToken, isAdmin], async (req, res) => {
     try {
         const status = req.query.status
-        var pendingList = []
+        const pendingList = []
         const managerList = await User.find({ verificationStatus: status, role: "manager" })
         managerList.forEach(async (manager) => {
             const auditorium = await Auditorium.find({ manager_id: manager.id })
             const managerPending = await User.findById(manager.id)
-            pendingList.push({ managerPending, auditorium })
-
+            pendingList.push(auditorium )
+            pendingList.push(managerPending)
         })
-        res.status(200).send(managerList)
+        console.log("inner",pendingList)
+        res.status(200).send(pendingList)
     } catch (err) {
         res.status(400).send(err.message)
     }
