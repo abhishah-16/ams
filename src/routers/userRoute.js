@@ -3,11 +3,17 @@ const { findById } = require("../models/user")
 const router = new express.Router()
 const User = require('../models/user')
 const Auditorium = require('../models/auditorium')
+const {sendWelcomeMail,sendVerificationPendingMail} = require('../emails/accounts')
 const { authToken, isAdmin, isManagerSignup } = require('../middlewares/authRole')
 
+<<<<<<< HEAD
 
 router.post("/users/signup", async (req, res) => {
     console.log("valids fields..")
+=======
+router.post("/users/signup", isManagerSignup, async (req, res) => {
+    //console.log("valids fields..")
+>>>>>>> f186f7367fa104defe3c8a16b97a0938a9dcbb93
     const user = new User({
         //...req.body,
         name: req.body.name,
@@ -19,6 +25,7 @@ router.post("/users/signup", async (req, res) => {
     try {
         await user.save()
         const token = await user.generateAuthToken()
+<<<<<<< HEAD
         // const auditorium = new Auditorium({
         //     auditoriumName:req.body.auditoriumName,
         //     address:req.body.address,
@@ -28,21 +35,38 @@ router.post("/users/signup", async (req, res) => {
         // })
         // await auditorium.save()
         res.status(201).send({ username:user.name, /*auditoriumname : auditorium.auditoriumName ,*/ token })
+=======
+        if (req.body.role == "manager") {
+            const auditorium = new Auditorium({
+                auditoriumName: req.body.auditoriumName,
+                address: req.body.address,
+                capacity: req.body.capacity,
+                city: req.body.city,
+                manager_id: user._id
+            })
+            await auditorium.save()
+            sendVerificationPendingMail(user.email,user.name)
+            return res.status(201).send({ username: user.name, auditoriumname: auditorium.auditoriumName, token })
+        }
+            req.header.authorization = "Bearer "+token
+            sendWelcomeMail(user.email,user.name)
+            res.status(201).send({user,token})
+>>>>>>> f186f7367fa104defe3c8a16b97a0938a9dcbb93
     } catch (err) {
         res.status(400).send(err.message)
     }
 })
 
 router.post("/users/login", async (req, res) => {
-    console.log("in login")
+    //console.log("in login")
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
         //res.status(200).send({ user : user.getPublicProfile(), token })
-        console.log("in login try")
+        req.header.authorization = "Bearer "+token
         res.status(200).send({ user, token })
     } catch (err) {
-        console.log("in login catch")
+        //console.log("in login catch")
         res.status(400).send(err.message)
     }
 })
@@ -65,11 +89,10 @@ router.post('/users/logoutAll', authToken, async (req, res) => {
     try {
         req.user.tokens = []
         await req.user.save()
-        res.status(200).send("Successfully logout from All accounts..")
+        return res.status(200).send("Successfully logout from All accounts..")
     } catch (err) {
-        res.status(500).send("Error while loging out from All accounts..")
+        res.status(500) //.send("Error while loging out from All accounts..")
     }
-
 })
 
 router.get("/users/me", authToken, async (req, res) => {
@@ -82,7 +105,7 @@ router.patch("/users/me", authToken, async (req, res) => {
     const isValidUpdate = updates.every((update) => allowedUpdates.includes(update))
     if (!isValidUpdate)
         return res.status(400).send("Invalid Updates..")
-    console.log("_id : ", req.user._id)
+    //console.log("_id : ", req.user._id)
     try {
         updates.forEach((update) => req.user[update] = req.body[update])
         await req.user.save()

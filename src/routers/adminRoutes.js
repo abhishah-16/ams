@@ -3,7 +3,12 @@ const router = new express.Router()
 const User = require('../models/user')
 const Auditorium = require('../models/auditorium')
 const { authToken, isAdmin } = require("../middlewares/authRole")
+<<<<<<< HEAD
 router.get("/users/pendingList",[authToken, isAdmin], async (req, res) => {
+=======
+const { sendVerificationRejectedMail, sendVerificationAcceptedMail } = require("../emails/accounts")
+router.get("/users/managerList", [authToken, isAdmin], async (req, res) => {
+>>>>>>> f186f7367fa104defe3c8a16b97a0938a9dcbb93
     try {
         const status = req.query.status
         const pendingList = []
@@ -25,8 +30,14 @@ router.get("/users/pendingList",[authToken, isAdmin], async (req, res) => {
 router.post('/users/setManagerStatus', [authToken, isAdmin], async (req, res) => {
     try {
         const Updatedmanager = await User.findByIdAndUpdate(req.body.managerId, { verificationStatus: req.body.verificationStatus }, { new: true, runValidators: true })
-        if (Updatedmanager)
+        if (Updatedmanager) {
+            if (Updatedmanager.verificationStatus=="true")
+                sendVerificationAcceptedMail(Updatedmanager.email, Updatedmanager.name)
+            else
+                sendVerificationRejectedMail(Updatedmanager.email, Updatedmanager.name)
+
             res.status(200).send(Updatedmanager)
+        }
         else res.status(404).send("Manager not found..")
     } catch (err) {
         res.status(404).send(err.message)
