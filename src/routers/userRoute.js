@@ -6,14 +6,8 @@ const Auditorium = require('../models/auditorium')
 const {sendWelcomeMail,sendVerificationPendingMail} = require('../emails/accounts')
 const { authToken, isAdmin, isManagerSignup } = require('../middlewares/authRole')
 
-<<<<<<< HEAD
-
-router.post("/users/signup", async (req, res) => {
-    console.log("valids fields..")
-=======
 router.post("/users/signup", isManagerSignup, async (req, res) => {
     //console.log("valids fields..")
->>>>>>> f186f7367fa104defe3c8a16b97a0938a9dcbb93
     const user = new User({
         //...req.body,
         name: req.body.name,
@@ -25,17 +19,6 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
     try {
         await user.save()
         const token = await user.generateAuthToken()
-<<<<<<< HEAD
-        // const auditorium = new Auditorium({
-        //     auditoriumName:req.body.auditoriumName,
-        //     address:req.body.address,
-        //     capacity:req.body.capacity,
-        //     city:req.body.city,
-        //     manager_id:user._id
-        // })
-        // await auditorium.save()
-        res.status(201).send({ username:user.name, /*auditoriumname : auditorium.auditoriumName ,*/ token })
-=======
         if (req.body.role == "manager") {
             const auditorium = new Auditorium({
                 auditoriumName: req.body.auditoriumName,
@@ -51,7 +34,6 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
             req.header.authorization = "Bearer "+token
             sendWelcomeMail(user.email,user.name)
             res.status(201).send({user,token})
->>>>>>> f186f7367fa104defe3c8a16b97a0938a9dcbb93
     } catch (err) {
         res.status(400).send(err.message)
     }

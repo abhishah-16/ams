@@ -108,11 +108,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 //Hash plain password using bcrypt and save in DB
 userSchema.pre('save', async function (next) {
     const user = this
-<<<<<<< HEAD
     console.log("just before saving")
-=======
-    //console.log("just befor saving")
->>>>>>> f186f7367fa104defe3c8a16b97a0938a9dcbb93
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
