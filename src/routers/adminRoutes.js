@@ -9,12 +9,6 @@ router.get("/users/managerList", [authToken, isAdmin], async (req, res) => {
         const status = req.query.status
         const pendingList = []
         const managerList = await User.find({ verificationStatus: status, role: "manager" })
-        // managerList.forEach(async (manager) => {
-        //     const auditorium = await Auditorium.find({ manager_id: manager.id })
-        //     const managerPending = await User.findById(manager.id)
-        //     pendingList.push(auditorium )
-        //     pendingList.push(managerPending)
-        // })
         for(let manager of managerList){
             const auditorium = await Auditorium.find({ manager_id: manager.id })
             delete auditorium._id

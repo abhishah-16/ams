@@ -62,7 +62,7 @@ router.post('/users/logout', authToken, async (req, res) => {
         await req.user.save()
         res.status(200).send("Successfully logout..")
     } catch (err) {
-        res.status(500).send("Error while loging out..")
+        res.status(500).send("Error while loging out..") 
     }
 })
 

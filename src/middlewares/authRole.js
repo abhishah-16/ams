@@ -14,9 +14,9 @@ const authToken = async (req, res, next) => {
         req.user = user
     } catch (err) {
        // console.log("in authToken catch")
-        res.status(401).send({ error: "Please authenticate first." })
-    }
-    next()
+        return res.status(401).send({ error: "Please authenticate first." })
+    } 
+    next()  
 }
 
 const isManagerSignup = async(req,res,next) => {

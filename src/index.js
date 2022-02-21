@@ -3,7 +3,7 @@ const app = express()
 require('./db/mongoose')
 const port = process.env.PORT || 3000;
 console.log("token:",process.env.JWTSECRETE)
-const userRouter = require('./routers/userRoute')
+const userRouter = require('./routers/userRoute') 
 const taskRouter = require('./routers/taskRoute')
 const adminRoute = require('./routers/adminRoutes')
 const maintainanceStatus = false
