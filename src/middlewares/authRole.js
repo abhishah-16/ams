@@ -3,12 +3,12 @@ const User = require("../models/user")
 const authToken = async (req, res, next) => {
     try {
         const token = req.header('Authorization').split(" ")[1]
-        const decoded = jwt.verify(token, "thisismysecretforkwttoken")
+        const decoded = jwt.verify(token, process.env.JWTSECRETE)
         const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
 
         if (!user) {
             //console.log("user is not...",user.name)
-            throw new Error("User not authorized.")
+            throw new Error("User not authorized.") 
         }
         req.token = token
         req.user = user

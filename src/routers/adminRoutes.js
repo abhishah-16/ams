@@ -19,7 +19,8 @@ router.get("/users/managerList", [authToken, isAdmin], async (req, res) => {
             const auditorium = await Auditorium.find({ manager_id: manager.id })
             delete auditorium._id
             pendingList.push({manager,auditorium})
-        }
+        } 
+
         res.status(200).send(pendingList)
     } catch (err) {
         res.status(400).send(err.message)

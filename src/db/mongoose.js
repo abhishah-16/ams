@@ -1,20 +1,14 @@
 const mongooese = require("mongoose")
-
-// mongooese.connect('mongodb://127.0.0.1:27017/AMS-test2',{
-//     useNewUrlParser:true,
-//     // useCreateIndex:true
-//     //useFindAndModify:false
-// })
-mongooese.connect('mongodb+srv://ams_developers:41CVNV34n7lGLzIL@cluster0.isj4t.mongodb.net/AMS?retryWrites=true&w=majority',{
+mongooese.connect(process.env.MONGODBURL,{
     useNewUrlParser:true,
     useUnifiedTopology:true
     // useCreateIndex:true
     //useFindAndModify:false
-})
+}) 
+   
+ 
 
-
-
-
+  
 
 
 

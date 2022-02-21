@@ -2,6 +2,7 @@ const express = require("express")
 const app = express()
 require('./db/mongoose')
 const port = process.env.PORT || 3000;
+console.log("token:",process.env.JWTSECRETE)
 const userRouter = require('./routers/userRoute')
 const taskRouter = require('./routers/taskRoute')
 const adminRoute = require('./routers/adminRoutes')
@@ -20,7 +21,7 @@ app.use(taskRouter)
 
 
 app.get("/", (req, res) => {
-    res.send("welcome to task manager")
+    res.send("welcome to AMS system")
 })
 
 app.listen(port, () => {
