@@ -14,6 +14,8 @@ router.get("/users/managerList", [authToken, isAdmin], async (req, res) => {
             delete auditorium._id
             pendingList.push({manager,auditorium})
         } 
+     //const managerList = await  User.aggregate([{$match:{role:"manager",verificationStatus:status}},{$lookup:{from:"auditorium",localField:"_id",foreignField:"manager_id",as:"list"}}])
+
 
         res.status(200).send(pendingList)
     } catch (err) {

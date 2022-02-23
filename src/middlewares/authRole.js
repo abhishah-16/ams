@@ -3,6 +3,7 @@ const User = require("../models/user")
 const authToken = async (req, res, next) => {
     try {
         const token = req.header('Authorization').split(" ")[1]
+        console.log("header:",token)
         const decoded = jwt.verify(token, process.env.JWTSECRETE)
         const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
 
@@ -14,7 +15,7 @@ const authToken = async (req, res, next) => {
         req.user = user
     } catch (err) {
        // console.log("in authToken catch")
-        return res.status(401).send({ error: "Please authenticate first." })
+        return res.status(401).send({ error: "Please authenticate first."})
     } 
     next()  
 }
@@ -51,9 +52,9 @@ const isUser = async (req, res, next) => {
     next()
 }
 const isOrganizer = async (req, res, next) => {
-    //console.log("ROle :",req.user.role)
+    console.log("ROle :",req.user.role)
     if (req.user.role !== "organizer")
-        return res.status(404).send("Unauthorized person..")
+        return res.status(404).send("1Unauthorized person..")
     next()
 }
 

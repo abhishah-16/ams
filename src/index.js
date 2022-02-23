@@ -4,8 +4,9 @@ require('./db/mongoose')
 const port = process.env.PORT || 3000;
 console.log("token:",process.env.JWTSECRETE)
 const userRouter = require('./routers/userRoute') 
-const taskRouter = require('./routers/taskRoute')
 const adminRoute = require('./routers/adminRoutes')
+const managerRoute = require('./routers/managerRoutes')
+const organizerRoute = require("./routers/organizerRoute")
 const maintainanceStatus = false
 app.use((req,res,next)=>{
     if(maintainanceStatus)
@@ -17,7 +18,8 @@ app.use((req,res,next)=>{
 app.use(express.json())
 app.use(userRouter)
 app.use(adminRoute)
-app.use(taskRouter)
+app.use(managerRoute)
+app.use(organizerRoute)
 
 
 app.get("/", (req, res) => {
