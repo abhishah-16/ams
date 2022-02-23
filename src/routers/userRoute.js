@@ -3,7 +3,7 @@ const { findById } = require("../models/user")
 const router = new express.Router()
 const User = require('../models/user')
 const Auditorium = require('../models/auditorium')
-const {sendWelcomeMail,sendVerificationPendingMail} = require('../emails/accounts')
+const { sendWelcomeMail, sendVerificationPendingMail } = require('../emails/accounts')
 const { authToken, isAdmin, isManagerSignup } = require('../middlewares/authRole')
 
 router.post("/users/signup", isManagerSignup, async (req, res) => {
@@ -19,21 +19,38 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
     try {
         await user.save()
         const token = await user.generateAuthToken()
+        let availableSlots = []
+        for (let i = 0; i < 15; i++) {
+            availableSlots[i] = i
+        }
+
+        console.log("avaiale", availableSlots)
         if (req.body.role == "manager") {
             const auditorium = new Auditorium({
                 auditoriumName: req.body.auditoriumName,
                 address: req.body.address,
                 capacity: req.body.capacity,
                 city: req.body.city,
-                manager_id: user._id
+                manager_id: user._id,
             })
-            await auditorium.save()
-            sendVerificationPendingMail(user.email,user.name)
+            const a = []
+            const aud = await auditorium.save()
+            for (let i = 1; i <= 14; i++) {
+                let start = i + 8
+                let end = start + 1
+                const Slots = { slot: i, startTime: start, endTime: end }
+                a.push(Slots)
+            }
+            aud.availableSlots = a
+            await aud.save()
+            console.log("aud", aud)
+
+            sendVerificationPendingMail(user.email, user.name)
             return res.status(201).send({ username: user.name, auditoriumname: auditorium.auditoriumName, token })
         }
-            req.header.authorization = "Bearer "+token
-            sendWelcomeMail(user.email,user.name)
-            res.status(201).send({user,token})
+        req.header.authorization = "Bearer " + token
+        sendWelcomeMail(user.email, user.name)
+        res.status(201).send({ user, token })
     } catch (err) {
         res.status(400).send(err.message)
     }
@@ -45,7 +62,7 @@ router.post("/users/login", async (req, res) => {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
         //res.status(200).send({ user : user.getPublicProfile(), token })
-        req.header.authorization = "Bearer "+token
+        req.header.authorization = "Bearer " + token
         res.status(200).send({ user, token })
     } catch (err) {
         //console.log("in login catch")
@@ -61,7 +78,7 @@ router.post('/users/logout', authToken, async (req, res) => {
         await req.user.save()
         res.status(200).send("Successfully logout..")
     } catch (err) {
-        res.status(500).send("Error while loging out..") 
+        res.status(500).send("Error while loging out..")
     }
 })
 

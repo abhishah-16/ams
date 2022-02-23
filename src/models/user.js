@@ -3,6 +3,7 @@ const validator = require("validator")
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const Task = require('./task')
+const Auditorium = require('../models/auditorium')
 const userSchema = new mongooese.Schema(
     {
         name: {
@@ -29,10 +30,10 @@ const userSchema = new mongooese.Schema(
                 if (v < 0) throw new Error('Age must be a positive number')
             }
         },
-        role:{
-            type:String,
-            required:true,
-            trim:true
+        role: {
+            type: String,
+            required: true,
+            trim: true
             // validate(v) {
             //     if (!v.toLowerCase().includes("user") || 
             //         !v.toLowerCase().includes("manager") || 
@@ -40,10 +41,10 @@ const userSchema = new mongooese.Schema(
             //         !v.toLowerCase().includes("admin")) throw new Error("Role doesn't exist..")
             // }
         },
-        verificationStatus:{
-            type:String,
-            trim:true,
-            default:true
+        verificationStatus: {
+            type: String,
+            trim: true,
+            default: true
         },
         password: {
             type: String,
@@ -64,15 +65,15 @@ const userSchema = new mongooese.Schema(
 )
 
 //create virtual to make relationship between user and task
-userSchema.virtual('auditorium',{
-    ref:"Auditorium",
-    localField:"_id",
-    foreignField:"manager_id"
+userSchema.virtual('auditorium', {
+    ref: "Auditorium",
+    localField: "_id",
+    foreignField: "manager_id"
 })
 
 // create method to get only public details of logged user
 //1) userSchema.methods.getPublicProfile =  function () {
-userSchema.methods.toJSON  =  function () {
+userSchema.methods.toJSON = function () {
     const user = this
     const userObject = user.toObject()
 
@@ -82,14 +83,6 @@ userSchema.methods.toJSON  =  function () {
     return userObject
 }
 
-//create method for generating auth token for user login
-userSchema.methods.generateAuthToken = async function () {
-    const user = this
-    const token = await jwt.sign({ _id: user._id.toString() }, 'thisismysecretforkwttoken')
-    user.tokens = user.tokens.concat({ token })
-    await user.save()
-    return token
-}
 
 //create findByCredentials method in User schema
 userSchema.statics.findByCredentials = async (email, password) => {
@@ -104,6 +97,14 @@ userSchema.statics.findByCredentials = async (email, password) => {
     //console.log("user : ", user.name)
     return user
 }
+//create method for generating auth token for user login
+userSchema.methods.generateAuthToken = async function () {
+    const user = this
+    const token = await jwt.sign({ _id: user._id.toString() }, 'thisismysecretforkwttoken')
+    user.tokens = user.tokens.concat({ token })
+    await user.save()
+    return token
+}
 
 //Hash plain password using bcrypt and save in DB
 userSchema.pre('save', async function (next) {
@@ -112,18 +113,20 @@ userSchema.pre('save', async function (next) {
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     }
-    if(user.role=="manager"){
+    if (user.role == "manager") {
         user.verificationStatus = "pending";
+        
     }
     else
         user.verificationStatus = "true"
     next();
 })
 
+
 //Use this middleware to delete all tasks of user after user gets deleted
-userSchema.pre('remove', async function(next){
+userSchema.pre('remove', async function (next) {
     const user = this
-    await Task.deleteMany({owner:user._id})
+    await Task.deleteMany({ owner: user._id })
     next()
 })
 

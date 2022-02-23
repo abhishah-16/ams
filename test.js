@@ -1,16 +1,8 @@
-// Initialize an object
-const name = {
-    firstName: 'Philip',
-    lastName: 'Fry'
-};
-
-// Initialize another object
-const details = {
-    job: 'Delivery Boy',
-    employer: 'Planet Express'
-};
-
-// Merge the objects
-const character = Object.assign(name, details);
-
-console.log(character);
+const tileslots=[]
+for(let i=1;i<=14;i++){
+    let start = i+8
+    let end = start+1
+    const availableSlots = {slot:i,start,end}
+    tileslots.push(availableSlots)
+}
+console.log(tileslots)

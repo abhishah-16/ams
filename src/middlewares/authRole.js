@@ -31,7 +31,6 @@ const isManagerSignup = async(req,res,next) => {
 }
     next()
 }
-
 const isManager = async (req, res, next) => {
     //console.log("ROle m:",req.user.role)
     if (req.user.role !== "manager")
