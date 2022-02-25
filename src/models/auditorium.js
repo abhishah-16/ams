@@ -15,9 +15,9 @@ const AuditoriumSchema = new mongooese.Schema(
             required: true,
             trim: true,
         },
-        city:{
-            type:String,
-            required:true
+        city: {
+            type: String,
+            required: true
         },
         capacity: {
             type: Number,
@@ -26,7 +26,17 @@ const AuditoriumSchema = new mongooese.Schema(
                 if (v < 0) throw new Error('Capacity must be a positive number')
             }
         },
-        manager_id:{
+        availableSlots: [{
+            slot: {
+                type: Number,
+            },
+            startTime: {
+                type: Number
+            },
+            endTime: { type: Number }
+        }
+        ],
+        manager_id: {
             type: mongooese.Schema.Types.ObjectId,
             required: true,
             ref: 'User'

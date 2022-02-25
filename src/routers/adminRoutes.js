@@ -9,13 +9,14 @@ router.get("/users/managerList", [authToken, isAdmin], async (req, res) => {
         const status = req.query.status
         const pendingList = []
         const managerList = await User.find({ verificationStatus: status, role: "manager" })
-        managerList.forEach(async (manager) => {
+        for(let manager of managerList){
             const auditorium = await Auditorium.find({ manager_id: manager.id })
-            const managerPending = await User.findById(manager.id)
-            pendingList.push(auditorium )
-            pendingList.push(managerPending)
-        })
-        console.log("inner",pendingList)
+            delete auditorium._id
+            pendingList.push({manager,auditorium})
+        } 
+     //const managerList = await  User.aggregate([{$match:{role:"manager",verificationStatus:status}},{$lookup:{from:"auditorium",localField:"_id",foreignField:"manager_id",as:"list"}}])
+
+
         res.status(200).send(pendingList)
     } catch (err) {
         res.status(400).send(err.message)
