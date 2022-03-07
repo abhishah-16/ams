@@ -4,6 +4,8 @@ mongooese.connect(process.env.MONGODBURL,{
     useUnifiedTopology:true
     // useCreateIndex:true
     //useFindAndModify:false
+},()=>{
+    console.log("mongodb connected")
 }) 
    
  

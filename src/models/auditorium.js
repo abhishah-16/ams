@@ -26,7 +26,7 @@ const AuditoriumSchema = new mongooese.Schema(
                 if (v < 0) throw new Error('Capacity must be a positive number')
             }
         },
-        availableSlots: [{
+        BookedSlots: [{
             slot: {
                 type: Number,
             },

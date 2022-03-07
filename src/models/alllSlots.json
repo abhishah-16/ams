@@ -1,0 +1,72 @@
+[
+    {
+        "slot": 1,
+        "startTime": 9,
+        "endTime": 10
+    },
+    {
+        "slot": 2,
+        "startTime": 10,
+        "endTime": 11
+    },
+    {
+        "slot": 3,
+        "startTime": 11,
+        "endTime": 12
+    },
+    {
+        "slot": 4,
+        "startTime": 12,
+        "endTime": 13
+    },
+    {
+        "slot": 5,
+        "startTime": 13,
+        "endTime": 14
+    },
+    {
+        "slot": 6,
+        "startTime": 14,
+        "endTime": 15
+    },
+    {
+        "slot": 7,
+        "startTime": 15,
+        "endTime": 16
+    },
+    {
+        "slot": 8,
+        "startTime": 16,
+        "endTime": 17
+    },
+    {
+        "slot": 9,
+        "startTime": 17,
+        "endTime": 18
+    },
+    {
+        "slot": 10,
+        "startTime": 18,
+        "endTime": 19
+    },
+    {
+        "slot": 11,
+        "startTime": 19,
+        "endTime": 20
+    },
+    {
+        "slot": 12,
+        "startTime": 20,
+        "endTime": 21
+    },
+    {
+        "slot": 13,
+        "startTime": 21,
+        "endTime": 22
+    },
+    {
+        "slot": 14,
+        "startTime": 22,
+        "endTime": 23
+    }
+]
