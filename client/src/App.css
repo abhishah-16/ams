@@ -1,0 +1,127 @@
+#root,html, body {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #f8f9fa !important;
+}
+
+a{
+  color: black ;
+}
+.brand-logo{
+  font-family: initial;
+}
+
+label{
+  color: #1e88e5 !important;
+}
+
+.rows {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 30px;
+  margin-left: 30px;
+}
+
+.fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.card [class*=card-header-] .card-icon, .card [class*=card-header-] .card-text {
+  border-radius: 3px;
+  background-color: #1e88e5;
+  padding: 15px;
+  margin-top: -20px;
+  margin-right: 15px;
+  float: left;
+}
+
+
+.bcolor{
+  background-color:seagreen  !important;
+  margin-left:auto !important;
+  margin-right: 1rem !important;
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 10rem;
+  padding: .5rem 0;
+  margin: .125rem 0 0;
+  font-size: 1rem;
+  color: #868d94!important;
+  text-align: center !important;
+  list-style: none;
+  background-color: #1e88e5!important;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: .25rem;
+}
+
+.dropdown-item:hover {
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #4b5563 !important;
+}
+
+.dropdown-menu a:not(.active) {
+  color: #ffffff !important;
+}
+
+.card{
+  border-radius: 1.25rem !important;
+}
+
+.card-home {
+  display: block;
+  margin: 1rem 1rem;
+}
+
+.mycard{
+  margin-top: 30px;
+}
+.auth-card{
+  padding: 20px;
+  text-align: center; 
+  max-width: 400px;
+  margin: 10px auto;
+}
+.input-field input[type=text]:focus {
+  border-bottom: 1px solid rgb(8, 93, 252) !important;
+  box-shadow: 0 1px 0 0 rgb(8, 93, 252)  !important;
+}
+.input-field input[type=password]:focus {
+  border-bottom: 1px solid rgb(8, 93, 252) !important;
+  box-shadow: 0 1px 0 0 rgb(8, 93, 252)  !important;
+}
+
+#toast-container{
+  top:30px !important;
+  right: 20px !important;
+  left: auto !important;
+}
+
+.material-icons:hover{
+  cursor: pointer;
+}
+
+.icon-m{
+ margin-right: 2px;
+}
+
+.footer{
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
