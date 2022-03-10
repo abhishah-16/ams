@@ -6,6 +6,7 @@ import UserLogin from './components/screens/UserLogin';
 import UserSignup from './components/screens/UserSignup';
 import NavBar from './components/Navbar';
 import Footer from './components/Footer';
+import SignUp from './components/screens/Signup';
 
 
 // const Routing = () => {
@@ -42,6 +43,9 @@ function App() {
       <UserLogin/>
     </Route>
     <Route exact path='/signup'>
+      <SignUp/>
+    </Route>
+    <Route exact path='/csignup'>
       <UserSignup/>
     </Route>
     </BrowserRouter>

@@ -19,12 +19,7 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
     try {
         await user.save()
         const token = await user.generateAuthToken()
-        //let availableSlots = []
-        // for (let i = 0; i < 15; i++) {
-        //     availableSlots[i] = i
-        // }
-
-        //console.log("avaiale", availableSlots)
+      
         if (req.body.role == "manager") {
             const auditorium = new Auditorium({
                 auditoriumName: req.body.auditoriumName,
@@ -33,17 +28,9 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
                 city: req.body.city,
                 manager_id: user._id,
             })
-            const a = []
-            const aud = await auditorium.save()
-            // for (let i = 1; i <= 14; i++) {
-            //     let start = i + 8
-            //     let end = start + 1
-            //     const Slots = { slot: i, startTime: start, endTime: end }
-            //     a.push(Slots)
-            // }
-            //aud.availableSlots = a
-            //await aud.save()
-            //console.log("aud", aud)
+           
+            await auditorium.save()
+         
 
             sendVerificationPendingMail(user.email, user.name)
             return res.status(201).send({ username: user.name, auditoriumname: auditorium.auditoriumName, token })

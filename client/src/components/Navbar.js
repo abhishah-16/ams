@@ -27,7 +27,7 @@ class NavBar extends Component {
     return (
       <MDBNavbar color="#1e88e5 blue darken-1" dark expand="md" className="rounded-b-lg">
         <MDBNavbarBrand>
-          <strong className="white-text title">Helping Hands At  Home</strong>
+          <strong className="white-text title">AMS</strong>
         </MDBNavbarBrand>
         <MDBNavbarToggler onClick={this.toggleCollapse} />
         <MDBCollapse id="navbarCollapse3" isOpen={this.state.isOpen} navbar>
