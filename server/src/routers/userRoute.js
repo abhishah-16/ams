@@ -38,10 +38,10 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
             for (let i = 1; i <= 14; i++) {
                 let start = i + 8
                 let end = start + 1
-                const Slots = { slot: i, startTime: start, endTime: end }
+                const Slots = { slot: i, startTime: start, endTime: end,status:false }
                 a.push(Slots)
             }
-            aud.availableSlots = a
+            aud.bookedSlots = a
             await aud.save()
             console.log("aud", aud)
 

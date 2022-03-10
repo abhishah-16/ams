@@ -24,9 +24,38 @@ router.get("/organizer/auditorium", [authToken, isOrganizer], async (req, res) =
 
 router.post("/organizer/bookAuditorium", [authToken, isOrganizer], async (req, res) => {
     try {
+        const audiId = req.body.audiId
+        const bookedSlots  = req.body.bookedSlots
         res.status(200).send("booked")
     } catch (err) {
         res.send({ error: err.message })
+    }
+})
+
+router.get('/organizer/getAvailableSlots/:audiId', async (req, res) => {
+    try {
+        //const avaialeSlots = await Auditorium.find({_id:req.params.audiId,"$bookedSlots.status":true})
+        const avaialeSlots = await Auditorium.aggregate([
+            { $match: { "bookedSlots.status": true } },
+            { $unwind: { path: "$bookedSlots" } },
+            { $project: { bookedSlots: 1, _id: 0 } }
+        ])
+
+        let sl = []
+        for (let s of avaialeSlots) {
+            console.log("s", s.bookedSlots.status)
+            const a = s.bookedSlots
+            if(!a.status){
+                sl.push({slot:a.slot,start:a.startTime,end:a.endTime})
+            }
+        }
+        // sl = avaialeSlots.filter(
+        //     (element) => { element.bookedSlots.status == true } //!bookedTimings.includes(element)
+        // );
+
+        res.send(sl)
+    } catch (err) {
+        res.send(err.message)
     }
 })
 
