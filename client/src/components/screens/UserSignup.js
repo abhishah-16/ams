@@ -1,18 +1,25 @@
-import React, { useState } from "react"
-import { Link, useHistory } from 'react-router-dom'
+import React, { useState,useEffect } from "react"
+import { Link, useHistory, useLocation } from 'react-router-dom'
 import M from 'materialize-css'
 import NavBar from '../Navbar'
 import Footer from "../Footer";
 
 const UserSignup = () => {
     const history = useHistory()
+    const location = useLocation();
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPasword] = useState("")
     const [age, setage] = useState("")
-    const [state, setState] = useState("")
-    const [city, setCity] = useState("")
     const [role, setRole] = useState("")
+
+    useEffect((req,res) => {
+        var d1 = location.state.data;
+    
+        console.log("d1",d1.r);
+        setRole(d1.r);
+         
+      }, [location]);
 
     const PostData = () => {
         if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
@@ -38,7 +45,7 @@ const UserSignup = () => {
                 }
                 else {
                     console.log("msg",data.message,data.error)
-                    M.toast({ html: data.message, classes: "#43a047 green darken-1" })
+                    M.toast({ html: "signed up successfully", classes: "#43a047 green darken-1" })
                     history.push('/login')
                 }
             }).catch(err => {
@@ -77,18 +84,6 @@ const UserSignup = () => {
                         value={age}
                         onChange={(e) => setage(e.target.value)}
                     />
-                    {/* <input
-                        type="text"
-                        placeholder="State"
-                        value={state}
-                        onChange={(e) => setState(e.target.value)}
-                    />
-                    <input
-                        type="text"
-                        placeholder="City"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                    /> */}
                     <input
                         type="text"
                         placeholder="Ex. manager,user,organizer"
