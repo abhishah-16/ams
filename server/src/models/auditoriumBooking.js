@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken')
 const User = require('./user')
 const AuditoriumBookingSchema = new mongooese.Schema(
     {
-
         event_date: {
             type: String,
             required: true,
@@ -57,6 +56,10 @@ const AuditoriumBookingSchema = new mongooese.Schema(
         available_tickets:{
             type:Number,
             default:0
+        },
+        city:{
+            type:String,
+            required:true
         }
     },{
         timestamps:true

@@ -10,7 +10,7 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
     //console.log("valids fields..")
     const user = new User({
         //...req.body,
-        name: req.body.name,    
+        name: req.body.name,
         email: req.body.email,
         password: req.body.password,
         age: req.body.age,

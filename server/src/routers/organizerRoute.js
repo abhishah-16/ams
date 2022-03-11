@@ -83,8 +83,8 @@ router.post("/organizer/bookAuditorium", [authToken, isOrganizer], async (req, r
             ...req.body,
             organizer_id: req.user._id,
             total_cost: 32000,
-            available_ticket: 0
-        })
+            available_ticket: req.body.total_tickets
+        })  
         const bookedDetails = await booking.save()
         res.send(booking).status(200)
     } catch (err) {
