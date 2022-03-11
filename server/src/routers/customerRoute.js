@@ -34,18 +34,14 @@ function getMergeTimeSlots(bookedSlots) {
     return sl
 }
 
-router.get("/customer/allEvents", [authToken, isOrganizer], async (req, res) => {
+router.get("/customer/allEvents", [authToken, isUser], async (req, res) => {
     try {
-        let auditoriumDetails
-        console.log("query:", req.query.city)
-        const findBycity = req.query.city ? { city: req.query.city } : {}
-        if (req.query.city) {
-            auditoriumDetails = await Auditorium.find(findBycity)
-        }
-        else auditoriumDetails = await Auditorium.find()
-        if (!auditoriumDetails[0])
-            return res.send({ message: "There is not auditorium availabe right now.!!" })
-        res.status(200).send(auditoriumDetails)
+        let match=req.query ? req.query:{}
+        const allEvents = await AuditoriumBooking.aggregate([
+            {$match:match},
+            {$project:{_id:0,timeSlots:0,auditorium_id:0,organizer_id:0,total_cost:0,total_tickets:0,createdAt:0,updatedAt:0}},
+        ])
+        res.send(allEvents)
     } catch (err) {
         res.send({ error: err.message })
     }

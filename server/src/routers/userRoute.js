@@ -27,6 +27,7 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
                 capacity: req.body.capacity,
                 city: req.body.city,
                 manager_id: user._id,
+                costPerHour:req.body.costPerHour
             })
            
             await auditorium.save()

@@ -4,6 +4,7 @@ require('./db/mongoose')
 const port = process.env.PORT ;
 // console.log("token:",process.env.JWTSECRETE)
 const userRouter = require('./routers/userRoute') 
+const customerRoute = require("./routers/customerRoute")
 const adminRoute = require('./routers/adminRoutes')
 const managerRoute = require('./routers/managerRoutes')
 const organizerRoute = require("./routers/organizerRoute")
@@ -20,6 +21,7 @@ app.use(userRouter)
 app.use(adminRoute)
 app.use(managerRoute)
 app.use(organizerRoute)
+app.use(customerRoute)
 
 
 app.get("/", (req, res) => {

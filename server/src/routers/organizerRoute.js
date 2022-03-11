@@ -79,14 +79,17 @@ router.post("/organizer/bookAuditorium", [authToken, isOrganizer], async (req, r
         const status = isValidBookingDate(req.body.event_date)
         if(status!="booked")
             return res.send({status})
+        const auditorium = await Auditorium.findById(req.body.auditorium_id) 
         const booking = new AuditoriumBooking({
             ...req.body,
             organizer_id: req.user._id,
-            total_cost: 32000,
-            available_ticket: req.body.total_tickets
+            total_cost: req.body.timeSlots.length * auditorium.costPerHour,
+            total_tickets:auditorium.capacity,
+            available_ticket: auditorium.capacity,
+            city:auditorium.city,
         })  
         const bookedDetails = await booking.save()
-        res.send(booking).status(200)
+        res.send({BookingId:bookedDetails._id,total_cost:bookedDetails.total_cost}).status(200)
     } catch (err) {
         res.send({ error: err.message })
     }

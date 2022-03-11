@@ -6,7 +6,7 @@ const User = require('./user')
 const AuditoriumSchema = new mongooese.Schema(
     {
         auditoriumName: {
-            type: Date,
+            type: String,
             required: true,
             trim: true
         },
@@ -25,6 +25,10 @@ const AuditoriumSchema = new mongooese.Schema(
             validate(v) {
                 if (v < 0) throw new Error('Capacity must be a positive number')
             }
+        },
+        costPerHour:{
+            type:Number,
+            required:true
         },
         BookedSlots: [{
             slot: {
