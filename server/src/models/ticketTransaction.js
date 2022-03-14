@@ -39,10 +39,8 @@ const ticketTranactionSchema = new mongooese.Schema(
       default: "pending",
     },
     tickets:[{
-      
         t_price:{
-            type:Number,
-            
+            type:Number,   
         }
     }]
   },
