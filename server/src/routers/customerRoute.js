@@ -90,19 +90,16 @@ router.get("/customer/allEvents", [authToken, isUser], async (req, res) => {
 //     });
 // )
 
-router.post("/event_booking",[authToken,isUser], async (req, res) => {
-    const event = await AuditoriumBooking.findById(req.body.event_id);
-    const total_seats = req.body.seat_no.length;
-    const price = event.ticket_price.toString();
-    var objTicket = {"price":"price"}
-    console.log(objTicket);
-    try {
+router.post("/event_booking", [authToken, isUser], async (req, res) => {
+  const event = await AuditoriumBooking.findById(req.body.event_id);
+  const total_seats = req.body.seat_numbers.length;
+  try {
+
     const ticketTransaction = new TicketTransaction({
-      seat_no: req.body.seat_no,
-      total_price: event.ticket_price*total_seats,
+      seat_numbers: req.body.seat_numbers,
+      total_price: event.ticket_price * total_seats,
       event_id: req.body.event_id,
       user_id: req.user._id,
-      tickets: objTicket
     });
     await ticketTransaction.save();
     res.send(ticketTransaction);
@@ -110,5 +107,40 @@ router.post("/event_booking",[authToken,isUser], async (req, res) => {
     res.send({ error: err.message });
   }
 });
+
+router.post('/customer/ticket/statusUpdate', [authToken, isUser], async (req, res) => {
+  try {
+    let tTransaction = await TicketTransaction.findById(req.body.cTrans_id);
+    if (tTransaction.status == "confirmed") {
+      throw new Error("Payment is already done")
+    }
+    else {
+      const event = await AuditoriumBooking.findById(req.body.event_id);
+
+      for (const s of tTransaction.seat_numbers) {
+        TicketTransaction.findOneAndUpdate(
+          { _id: req.body.cTrans_id },
+          { $push: { tickets: { "t_price": event.ticket_price, "seat_no": s } } },
+
+          function (error, success) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log(success);
+            }
+          });
+      }
+      tTransaction = await TicketTransaction.findByIdAndUpdate({ _id: req.body.cTrans_id }, {
+        $set: {
+          status: "confirmed"
+        }
+      }, { new: true })
+    }
+    res.send({ message: "Payment Done!" })
+  } catch (err) {
+    res.send({ error: err.message });
+  }
+
+})
 
 module.exports = router;
