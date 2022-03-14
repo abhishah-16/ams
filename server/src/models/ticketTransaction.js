@@ -7,7 +7,7 @@ const { ObjectId } = require("mongodb");
 
 const ticketTranactionSchema = new mongooese.Schema(
   {
-    seat_no: {
+    seat_numbers: {
       type: Array,
       default: 0,
       validate(v) {
@@ -39,6 +39,10 @@ const ticketTranactionSchema = new mongooese.Schema(
       default: "pending",
     },
     tickets:[{
+      
+        seat_no:{
+            type:Number,
+        },
         t_price:{
             type:Number,   
         }
