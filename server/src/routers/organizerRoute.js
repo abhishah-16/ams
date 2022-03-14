@@ -102,8 +102,9 @@ router.post("/organizer/audiBookingPayment", [authToken, isOrganizer], async (re
         const event_id = req.body.event_id
         const amount = req.body.amount
         const sender = req.user._id
-        const {status} = await AuditoriumBooking.findOne({event_id})
-        if(status)
+        const {status} = await AuditoriumBooking.findById(event_id)
+        console.log("status",status)
+        if(status=="True")
             throw new Error("Payment already completed")
         const session = await mongoose.startSession()
         session.startTransaction()
