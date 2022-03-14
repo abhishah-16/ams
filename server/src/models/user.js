@@ -63,7 +63,7 @@ const userSchema = new mongooese.Schema(
     }
 )
 
-//create virtual to make relationship between user and task
+//create virtual to make relationship between manager and Auditorium
 userSchema.virtual('auditorium', {
     ref: "Auditorium",
     localField: "_id",
@@ -121,13 +121,6 @@ userSchema.pre('save', async function (next) {
     next();
 })
 
-
-//Use this middleware to delete all tasks of user after user gets deleted
-userSchema.pre('remove', async function (next) {
-    const user = this
-    await Task.deleteMany({ owner: user._id })
-    next()
-})
 
 const User = mongooese.model('User', userSchema)
 
