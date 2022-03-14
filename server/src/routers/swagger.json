@@ -1,0 +1,159 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "API Documentation in Node.js Using Swagger",
+        "description": "User Restful webservice application",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "basePath": "/",
+    "tags": [
+        {
+            "name": "Users",
+            "description": "API for users"
+        }
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/users/login": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "enter user's email id",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "email","password"
+                            ],
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "login for all users",
+                "responses": {
+                    "200": {
+                        "description": "ok"
+                    }
+                }
+            }
+        },
+        "/users/signup": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "enter user's details for signup",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "email","password","role","age","name"
+                            ],
+                            "properties": {
+                                "name":{"type":"string"},
+                                "age":{"type":"integer"},
+                                "role":{"type":"string"},
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "signup for all users excepts manager",
+                "responses": {
+                    "201": {
+                        "description": "user created"
+                    },
+                    "400":{
+                        "description": "Error while creating user"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "query",
+                    "required": true,
+                    "description": "Id of the user which is to be searched",
+                    "type": "integer"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get user by id",
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "404": {
+                        "description": "not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "User": {
+            "required": [
+                "name",
+                "_id",
+                "companies"
+            ],
+            "properties": {
+                "name": {
+                    "type": "integer",
+                    "uniqueItems": true
+                },
+                "email": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "number"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "Users": {
+            "type": "array",
+            "$ref": "#/definitions/User"
+        }
+    }
+}

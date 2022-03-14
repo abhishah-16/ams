@@ -9,12 +9,32 @@ const adminRoute = require('./routers/adminRoutes')
 const managerRoute = require('./routers/managerRoutes')
 const organizerRoute = require("./routers/organizerRoute")
 const maintainanceStatus = false
+const swaggerJsDOc = require("swagger-jsdoc")
+const swaggerUi = require("swagger-ui-express")
+const swaggerDoc = require("./routers/swagger.json")
+const { application, urlencoded } = require("express")
+app.use(express.json())
+app.use(express.urlencoded({extended:true}))
+const swaggerOptions={
+    swaggerDefinition:{
+        info:{
+            title:"Auditorium Management System API",
+            description:"APIs for manage auditorium details",
+            conatact:{
+                name:"Jay patel"
+            },
+            server:["http://localhost:5000"]
+        }
+    },
+    apis:["./routers/*.js"]
+}
+const swaggerDocs = swaggerJsDOc(swaggerOptions)
+app.use("/api-docs",swaggerUi.serve,swaggerUi.setup(swaggerDoc))
 app.use((req,res,next)=>{
     if(maintainanceStatus)
         res.status(504).send("Currently this site is under maintainance , please try again some time.")
     next()
 })  
-
                 
 app.use(express.json())
 app.use(userRouter)
@@ -22,7 +42,6 @@ app.use(adminRoute)
 app.use(managerRoute)
 app.use(organizerRoute)
 app.use(customerRoute)
-
 
 app.get("/", (req, res) => {
     res.send("welcome to AMS system")

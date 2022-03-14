@@ -29,10 +29,7 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
                 manager_id: user._id,
                 costPerHour:req.body.costPerHour
             })
-           
             await auditorium.save()
-         
-
             sendVerificationPendingMail(user.email, user.name)
             return res.status(201).send({ username: user.name, auditoriumname: auditorium.auditoriumName, token })
         }
@@ -45,7 +42,7 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
 })
 
 router.post("/users/login", async (req, res) => {
-    //console.log("in login")
+    console.log("in login",req.body)
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
@@ -106,9 +103,6 @@ router.patch("/users/me", authToken, async (req, res) => {
 
 router.delete("/users/me", authToken, async (req, res) => {
     try {
-        // const user = await User.findByIdAndDelete(req.user._id)
-        // if (!user)
-        //     return res.status(404).send("User not found")
         await req.user.remove()
         res.status(200).send(req.user)
     } catch (err) {
