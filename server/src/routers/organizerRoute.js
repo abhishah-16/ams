@@ -9,25 +9,24 @@ const AuditoriumBooking = require('../models/auditoriumBooking')
 const time = require('../models/alllSlots.json')
 const { ObjectId } = require("mongodb")
 const {isValidBookingDate}  = require("../utils/utils")
-function AllTime(allTimings) {
-    time.map((timing) => allTimings.push(timing.time));
-    return allTimings;
-}
+// function AllTime(allTimings) {
+//     time.map((timing) => allTimings.push(timing.time));
+//     return allTimings;
+// }
 
 function AvailableTime(allTimings, bookedTimings, availableTimings) {
     availableTimings = allTimings.filter(
-        (element) =>
-            !bookedTimings.includes(element.slot)
+        (element) => !bookedTimings.includes(element.slot)
     );
     return availableTimings;
 }
 
-function BookedTime(bAudi, bookedTimings) {
-    bAudi.map((booking) => {
-        booking.time.map((time) => bookedTimings.push(time));
-    });
-    return bookedTimings;
-}
+// function BookedTime(bAudi, bookedTimings) {
+//     bAudi.map((booking) => {
+//         booking.time.map((time) => bookedTimings.push(time));
+//     });
+//     return bookedTimings;
+// }
 function getMergeTimeSlots(bookedSlots) {
     let sl = []
     for (let t of bookedSlots) {
@@ -85,36 +84,13 @@ router.post("/organizer/bookAuditorium", [authToken, isOrganizer], async (req, r
             organizer_id: req.user._id,
             total_cost: req.body.timeSlots.length * auditorium.costPerHour,
             total_tickets:auditorium.capacity,
-            available_ticket: auditorium.capacity,
+            available_tickets: auditorium.capacity,
             city:auditorium.city,
         })  
         const bookedDetails = await booking.save()
         res.send({BookingId:bookedDetails._id,total_cost:bookedDetails.total_cost}).status(200)
     } catch (err) {
         res.send({ error: err.message })
-    }
-})
-
-router.get('/organizer/getAvailableSlots/:audiId', async (req, res) => {
-    try {
-        //const avaialeSlots = await Auditorium.find({_id:req.params.audiId,"$bookedSlots.status":true})
-        const avaialeSlots = await Auditorium.aggregate([
-            { $match: { "bookedSlots.status": true } },
-            { $unwind: { path: "$bookedSlots" } },
-            { $project: { bookedSlots: 1, _id: 0 } }
-        ])
-
-        let sl = []
-        for (let s of avaialeSlots) {
-            console.log("s", s.bookedSlots.status)
-            const a = s.bookedSlots
-            if(!a.status){
-                sl.push({slot:a.slot,start:a.startTime,end:a.endTime})
-            }
-        }
-        res.send(sl)
-    } catch (err) {
-        res.send(err.message)
     }
 })
 

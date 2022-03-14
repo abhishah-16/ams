@@ -1,4 +1,5 @@
 var dateTime = require('node-datetime');
+
 function isValidBookingDate(date) {
     var current_date = dateTime.create();
     var bookingDate = dateTime.create(date)
