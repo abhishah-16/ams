@@ -96,15 +96,15 @@ router.post("/organizer/bookAuditorium", [authToken, isOrganizer], async (req, r
         res.send({ error: err.message })
     }
 })
-router.post("/organizer/audiBookingPayment", [authToken, isOrganizer], async (req, res) => {
+router.post("/organizer/audiBookingPayment/:status", [authToken, isOrganizer], async (req, res) => {
     try {
 
         const event_id = req.body.event_id
         const amount = req.body.amount
         const sender = req.user._id
-        const {status} = await AuditoriumBooking.findById(event_id)
-        console.log("status",status)
-        if(status=="True")
+        const { status } = await AuditoriumBooking.findById(event_id)
+        console.log("status", status)
+        if (status == "True")
             throw new Error("Payment already completed")
         const session = await mongoose.startSession()
         session.startTransaction()
@@ -113,16 +113,28 @@ router.post("/organizer/audiBookingPayment", [authToken, isOrganizer], async (re
             const { total_cost } = await AuditoriumBooking.findById(req.body.event_id)
             const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "True" })
             console.log("com", amount, total_cost)
-            if (amount < total_cost || amount > total_cost)
-                throw new Error(`User ${sender.name} you have enter wrong amount`)
-            else if (amount == total_cost) {
-                await AuditoriumBooking.findByIdAndUpdate(event_id,{status:"True"})
+            console.log("1")
+            if (req.params.status == "True") {
+            console.log("2")
+                if (amount < total_cost || amount > total_cost)
+                    throw new Error(`User ${sender.name} you have enter wrong amount`)
+                else if (amount == total_cost) {
+                    await AuditoriumBooking.findByIdAndUpdate(event_id, { status: "True" })
+                    await bookingConfirmation.save()
+                    await session.commitTransaction()
+                    return res.json({ amount, status: bookingConfirmation.status })
+                }
+            }
+            else {
+                console.log("falied payment")
+                await AuditoriumBooking.findByIdAndDelete(event_id)
+                const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "False" })
                 await bookingConfirmation.save()
                 await session.commitTransaction()
-                return res.json({ amount, status: bookingConfirmation.status })
+                return res.json({ amount, status: bookingConfirmation.status ,message:"Booking has been cancel"})
             }
         } catch (err) {
-            const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "False" })
+            const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "Pending" })
             await bookingConfirmation.save()
             console.log("in abort :", err.message)
             await session.abortTransaction()
@@ -131,9 +143,10 @@ router.post("/organizer/audiBookingPayment", [authToken, isOrganizer], async (re
         } finally {
             session.endSession()
         }
+
     } catch (err) {
         console.log("err", err.message)
-        return res.send({error:err.message})
+        return res.send({ error: err.message })
     }
 })
 module.exports = router
