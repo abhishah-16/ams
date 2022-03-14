@@ -60,6 +60,10 @@ const AuditoriumBookingSchema = new mongooese.Schema(
         city:{
             type:String,
             required:true
+        },
+        status:{
+            type:String,
+            default:"Pending"
         }
     },{
         timestamps:true

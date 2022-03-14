@@ -37,12 +37,15 @@ function getMergeTimeSlots(bookedSlots) {
 
 router.get("/customer/allEvents", [authToken, isUser], async (req, res) => {
   try {
-    let match = req.query ? req.query : {};
+    let match = {}
+    if (req.query._id)
+      match = { _id: ObjectId(req.query._id) }
+    else match = req.query ? req.query : {};
+    console.log("query", match)
     const allEvents = await AuditoriumBooking.aggregate([
       { $match: match },
       {
         $project: {
-          _id: 0,
           timeSlots: 0,
           auditorium_id: 0,
           organizer_id: 0,
@@ -140,7 +143,43 @@ router.post('/customer/ticket/statusUpdate', [authToken, isUser], async (req, re
   } catch (err) {
     res.send({ error: err.message });
   }
+})
 
+router.post("/customer/ticketPayment", async (req, res) => {
+  try {
+      const sender = req.body.sender
+      const receiver = req.body.receiver
+      const amount = req.body.amount
+
+      const session = await mongoose.startSession()
+      session.startTransaction()
+
+      try {
+          const sender = await User.findById(req.body.sender).session(session)
+          if (sender.wallet < amount)
+              throw new Error(`User ${sender.first_name} you have insufficient balance`)
+          else
+              sender.wallet = sender.wallet - amount;
+
+          const receiver = await User.findById(req.body.receiver).session(session)
+          receiver.wallet = receiver.wallet + amount
+
+          await sender.save()
+          await receiver.save()
+          await session.commitTransaction()
+
+          return res.json({ sender: sender.first_name, receiver: receiver.first_name, amount: amount, yourBalance: sender.wallet })
+
+      } catch (err) {
+          console.log("in abort :", err.message)
+          await session.abortTransaction()
+      } finally {
+          session.endSession()
+      }
+  } catch (err) {
+      console.log("err", err.message)
+      return res.send(`Transaction falied`)
+  }
 })
 
 module.exports = router;

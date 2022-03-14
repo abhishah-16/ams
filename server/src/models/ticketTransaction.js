@@ -44,8 +44,7 @@ const ticketTranactionSchema = new mongooese.Schema(
             type:Number,
         },
         t_price:{
-            type:Number,
-            
+            type:Number,   
         }
     }]
   },
