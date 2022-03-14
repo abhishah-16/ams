@@ -21,7 +21,6 @@ router.get("/users/managerList", [authToken, isAdmin], async (req, res) => {
     }
 })
 
-
 router.post('/users/setManagerStatus', [authToken, isAdmin], async (req, res) => {
     try {
         const Updatedmanager = await User.findByIdAndUpdate(req.body.managerId, { verificationStatus: req.body.verificationStatus }, { new: true, runValidators: true })

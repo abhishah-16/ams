@@ -2,8 +2,8 @@
     "swagger": "2.0",
     "info": {
         "version": "1.0.0",
-        "title": "API Documentation in Node.js Using Swagger",
-        "description": "User Restful webservice application",
+        "title": "API Documentation for AMS system",
+        "description": "List of all APIs for management resources like auditorium, tickets, booking etc..",
         "license": {
             "name": "MIT",
             "url": "https://opensource.org/licenses/MIT"
@@ -13,7 +13,7 @@
     "tags": [
         {
             "name": "Users",
-            "description": "API for users"
+            "description": "APIs for users management in AMS"
         }
     ],
     "produces": [
@@ -27,11 +27,12 @@
                         "name": "body",
                         "in": "body",
                         "required": true,
-                        "description": "enter user's email id",
+                        "description": "Enter valid details to login user",
                         "schema": {
                             "type": "object",
                             "required": [
-                                "email","password"
+                                "email",
+                                "password"
                             ],
                             "properties": {
                                 "email": {
@@ -51,6 +52,9 @@
                 "responses": {
                     "200": {
                         "description": "ok"
+                    },
+                    "400": {
+                        "description": "Error while logging into system."
                     }
                 }
             }
@@ -62,16 +66,26 @@
                         "name": "body",
                         "in": "body",
                         "required": true,
-                        "description": "enter user's details for signup",
+                        "description": "Enter user's all details for signup",
                         "schema": {
                             "type": "object",
                             "required": [
-                                "email","password","role","age","name"
+                                "email",
+                                "password",
+                                "role",
+                                "age",
+                                "name"
                             ],
                             "properties": {
-                                "name":{"type":"string"},
-                                "age":{"type":"integer"},
-                                "role":{"type":"string"},
+                                "name": {
+                                    "type": "string"
+                                },
+                                "age": {
+                                    "type": "integer"
+                                },
+                                "role": {
+                                    "type": "string"
+                                },
                                 "email": {
                                     "type": "string"
                                 },
@@ -85,32 +99,74 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "signup for all users excepts manager",
+                "summary": "Signup for all users excepts manager",
                 "responses": {
                     "201": {
-                        "description": "user created"
+                        "description": "User has been created into system."
                     },
-                    "400":{
-                        "description": "Error while creating user"
+                    "400": {
+                        "description": "Error while creating user."
                     }
                 }
             }
         },
-        "/user": {
-            "parameters": [
-                {
-                    "name": "id",
-                    "in": "query",
-                    "required": true,
-                    "description": "Id of the user which is to be searched",
-                    "type": "integer"
+        "/users/me": {
+            "patch": {
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Enter user's all details for signup",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "email",
+                                "password",
+                                "role",
+                                "age",
+                                "name"
+                            ],
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "age": {
+                                    "type": "integer"
+                                },
+                                "role": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Signup for all users excepts manager",
+                "responses": {
+                    "201": {
+                        "description": "User has been created into system."
+                    },
+                    "400": {
+                        "description": "Error while creating user."
+                    }
                 }
-            ],
+            }
+        },
+        "/users/me": {
             "get": {
                 "tags": [
                     "Users"
                 ],
-                "summary": "Get user by id",
+                "summary": "Get the personal(looged user's) details.",
                 "responses": {
                     "200": {
                         "description": "ok",
@@ -118,8 +174,70 @@
                             "$ref": "#/definitions/User"
                         }
                     },
-                    "404": {
-                        "description": "not found"
+                    "401": {
+                        "description": "User not authenticated."
+                    }
+                }
+            }
+        },
+        "/users/managerList": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get the all manager list",
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "401": {
+                        "description": "Please authenticate befor sending request"
+                    },
+                    "400":{
+                        "description":"Unauthenticated person to view this details"
+                    }
+                }
+            }
+        },
+        "/users/setManagerStatus": {
+            "post": {
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Enter 'manager id' and 'verification status of manager', whom you want to change verification status form the below options\n => [ True , False ]",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "manager_id",
+                                "verificationStatus"
+                            ],
+                            "properties": {
+                                "manager_id": {
+                                    "type": "string"
+                                },
+                                "verificationStatus":{
+                                    "type":"string"
+                                }
+                                
+                            }
+                        }
+                    }
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get the all manager list",
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "401": {
+                        "description": "Please authenticate befor sending request"
+                    },
+                    "400":{
+                        "description":"Unauthenticated person to view this details"
                     }
                 }
             }
@@ -130,15 +248,17 @@
             "required": [
                 "name",
                 "_id",
-                "companies"
+                "email",
+                "age",
+                "role"
             ],
             "properties": {
                 "name": {
-                    "type": "integer",
-                    "uniqueItems": true
+                    "type": "string"
                 },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "uniqueItems": true
                 },
                 "age": {
                     "type": "number"
