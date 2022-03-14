@@ -63,12 +63,6 @@ const userSchema = new mongooese.Schema(
     }
 )
 
-//create virtual to make relationship between manager and Auditorium
-userSchema.virtual('auditorium', {
-    ref: "Auditorium",
-    localField: "_id",
-    foreignField: "manager_id"
-})
 
 // create method to get only public details of logged user
 //1) userSchema.methods.getPublicProfile =  function () {
