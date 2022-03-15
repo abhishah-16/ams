@@ -10,14 +10,13 @@ const ManagerSignup = () => {
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPasword] = useState("")
-    const [address, setAddress] = useState("")
-    const [city, setCity] = useState("")
-    const [cost, setCost] = useState("")
-    const [capacity, setCapacity] = useState("")
-    const [audiName, setAudiName] = useState("")
     const [age, setAge] = useState("")
     const [role, setRole] = useState("")
-
+    const [audiName, setAudiName] = useState("")
+    const [address, setAddress] = useState("")
+    const [capacity, setCapacity] = useState("")
+    const [city, setCity] = useState("")
+    const [cost, setCost] = useState("")
     
     useEffect((req, res) => {
         var role = location.state;
@@ -106,11 +105,23 @@ const ManagerSignup = () => {
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                     />
-                     <input
+                    <input
                         type="text"
-                        placeholder=""
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
+                        placeholder="City"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                    />
+                      <input
+                        type="Number"
+                        placeholder="Capacity"
+                        value={capacity}
+                        onChange={(e) => setCapacity(e.target.value)}
+                    />
+                      <input
+                        type="Number"
+                        placeholder="Cost per hour"
+                        value={cost}
+                        onChange={(e) => setCost(e.target.value)}
                     />
                     <button className="btn waves-effect waves-light text-white blue darken-1 p-auto"
                         onClick={() => PostData()}
