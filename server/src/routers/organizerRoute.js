@@ -54,9 +54,8 @@ router.get("/organizer/auditorium", [authToken, isOrganizer], async (req, res) =
     }
 })
 
-
-router.post("/organizer/getAvailableSlots", [authToken, isOrganizer], async (req, res) => {
-    console.log("getaltimeslots")
+router.get("/organizer/getAvailableSlots", [authToken, isOrganizer], async (req, res) => {
+    console.log("getalltimeslots")
     try {
         const audiId = req.body.auditorium_id
         const date = req.body.date
@@ -96,6 +95,7 @@ router.post("/organizer/bookAuditorium", [authToken, isOrganizer], async (req, r
         res.send({ error: err.message })
     }
 })
+
 router.post("/organizer/audiBookingPayment/:status", [authToken, isOrganizer], async (req, res) => {
     try {
 
