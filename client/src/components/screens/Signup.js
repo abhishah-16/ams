@@ -17,7 +17,7 @@ const SignUp = () => {
           <button className="btn waves-effect waves-light text-white blue darken-1 p-auto"onClick={() => {
               var data = { role: "manager" };
               history.push({
-                pathname: "/customer/signup",
+                pathname: "/manager/signup",
                 state: data,
               });
             }}>
@@ -26,7 +26,7 @@ const SignUp = () => {
           <button className="btn waves-effect waves-light text-white blue darken-1 p-auto"onClick={() => {
               var data = { role: "organizer" };
               history.push({
-                pathname: "/customer/signup",
+                pathname: "/organizer/signup",
                 state: data,
               });
             }}>

@@ -53,7 +53,7 @@ const Login = () => {
       <NavBar />
       <div className="mycard">
         <div className="card auth-card input-field">
-          <h4>Helping Hands At Home</h4>
+          <h4>Auditoria</h4>
           <input
             type="text"
             placeholder="email"

@@ -24,7 +24,7 @@ const Home = () => {
               />
             </div>
             <div className="lg:flex-grow md:w-1/2 lg:pl-24 md:pl-16 flex flex-col md:items-start md:text-left items-center text-center">
-              <h4>HELPING HANDS AT HOME</h4>
+              <h4>Auditoria</h4>
               <br />
               <h1 className="title-font sm:text-3xl text-3xl mb-4 font-medium text-gray-900">
                 Quality Home Services, On Demand
@@ -47,7 +47,7 @@ const Home = () => {
           <div className="container px-5 py-24 mx-auto">
             <div className="flex flex-col text-center w-full mb-20">
               <h2 className="text-xs text-blue-500 tracking-widest font-medium title-font mb-1">
-                HELPING HANDS AT HOME
+                Auditoria
               </h2>
               <h1 className="sm:text-3xl text-5xl font-medium title-font mb-4 text-gray-900">
                 Our Services
