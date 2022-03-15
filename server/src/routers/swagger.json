@@ -1,519 +1,950 @@
 {
-    "swagger": "2.0",
-    "info": {
-        "version": "1.0.0",
-        "title": "API Documentation for AMS system",
-        "description": "List of all APIs for management resources like auditorium, tickets, booking etc..",
-        "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
-        }
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API Documentation for AMS system",
+    "description": "List of all APIs for management resources like auditorium, tickets, booking etc..",
+    "contact": {
+      "name": "Ajay Pipaliya & Jay Patel",
+      "email":"apipaliya02@gmail.com"
     },
-    "basePath": "/",
-    "tags": [
-        {
-            "name": "Users",
-            "description": "APIs to handle general task like Login, Signup, Profile, Logout"
-        },
-        {
-            "name": "Admin",
-            "description": "APIs for Admin management in AMS"
-        },
-        {
-            "name": "Customer",
-            "description": "APIs for Customer management in AMS"
-        }
-    ],
-    "produces": [
-        "application/json"
-    ],
-    "securityDefinitions": {
-        "Bearer": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
-        }
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "General",
+      "description": "APIs to handle general task like Login, Signup, Profile, Logout"
     },
-    "paths": {
-        "/users/login": {
-            "post": {
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "description": "Enter valid details to login user",
-                        "schema": {
-                            "type": "object",
-                            "required": [
-                                "email",
-                                "password"
-                            ],
-                            "properties": {
-                                "email": {
-                                    "type": "string"
-                                },
-                                "password": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "login for all users",
-                "responses": {
-                    "200": {
-                        "description": "ok"
-                    },
-                    "400": {
-                        "description": "Error while logging into system."
-                    }
-                }
-            }
-        },
-        "/users/signup": {
-            "post": {
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "description": "Enter user's all details for signup",
-                        "schema": {
-                            "type": "object",
-                            "required": [
-                                "email",
-                                "password",
-                                "role",
-                                "age",
-                                "name"
-                            ],
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "age": {
-                                    "type": "integer"
-                                },
-                                "role": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string"
-                                },
-                                "password": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Signup for all users excepts manager",
-                "responses": {
-                    "201": {
-                        "description": "User has been created into system."
-                    },
-                    "400": {
-                        "description": "Error while creating user."
-                    }
-                }
-            }
-        },
-        "/users/me/update": {
-            "patch": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "description": "Enter user's all details for signup",
-                        "schema": {
-                            "type": "object",
-                            "required": [
-                                "email",
-                                "password",
-                                "role",
-                                "age",
-                                "name"
-                            ],
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "age": {
-                                    "type": "integer"
-                                },
-                                "role": {
-                                    "type": "string"
-                                },
-                                "email": {
-                                    "type": "string"
-                                },
-                                "password": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Signup for all users excepts manager",
-                "responses": {
-                    "201": {
-                        "description": "User has been created into system."
-                    },
-                    "400": {
-                        "description": "Error while creating user."
-                    }
-                }
-            }
-        },
-        "/users/me": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get the personal(looged user's) details.",
-                "responses": {
-                    "200": {
-                        "description": "ok",
-                        "schema": {
-                            "$ref": "#/definitions/User"
-                        }
-                    },
-                    "401": {
-                        "description": "User not authenticated."
-                    }
-                }
-            }
-        },
-        "/admin/adminDashboard": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Get the accsess of Admin Dashboard",
-                "responses": {
-                    "200": {
-                        "description": "Ok"
-                    },
-                    "401": {
-                        "description": "Please authenticate befor sending request"
-                    },
-                    "400": {
-                        "description": "Unauthenticated person to view this details"
-                    }
-                }
-            }
-        },
-        "/admin/managerList": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "status",
-                        "in": "query",
-                        "type": "string",
-                        "required": true,
-                        "description": "Can query for particular manager with verification status like [Pending, True, Flase] verification"
-                    }
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Get the all manager list",
-                "responses": {
-                    "200": {
-                        "description": "Ok"
-                    },
-                    "401": {
-                        "description": "Please authenticate befor sending request"
-                    },
-                    "400": {
-                        "description": "Unauthenticated person to view this details"
-                    }
-                }
-            }
-        },
-        "/admin/setManagerStatus": {
-            "post": {
-                "security": [{"Bearer":[]}],    
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "description": "Enter 'manager id' and 'verification status of manager', whom you want to change verification status form the below options\n => [ True , False ]",
-                        "schema": {
-                            "type": "object",
-                            "required": [
-                                "manager_id",
-                                "verificationStatus"
-                            ],
-                            "properties": {
-                                "manager_id": {
-                                    "type": "string"
-                                },
-                                "verificationStatus": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Get the all manager list",
-                "responses": {
-                    "200": {
-                        "description": "Ok"
-                    },
-                    "401": {
-                        "description": "Please authenticate befor sending request"
-                    },
-                    "400": {
-                        "description": "Unauthenticated person to view this details"
-                    }
-                }
-            }
-        },
-        "/customer/allEvents": {
-            "get": {
-                "parameters": [
-                    {
-                        "name": "city",
-                        "in": "query",
-                        "type": "string",
-                        "description": "Enter 'manager id' and 'verification status of manager', whom you want to change verification status form the below options\n => [ True , False ]"
-                    },
-                    {
-                        "name": "category",
-                        "in": "query",
-                        "type": "string",
-                        "description": "Enter 'manager id' and 'verification status of manager', whom you want to change verification status form the below options\n => [ True , False ]"
-                    }
-                ],
-                "tags": [
-                    "Customer"
-                ],
-                "summary": "Get the all events list for customer",
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Ok"
-                    },
-                    "401": {
-                        "description": "Please authenticate befor sending request"
-                    },
-                    "400": {
-                        "description": "Unauthenticated person to view this details"
-                    }
-                }
-            }
-        },
-        "/customer/ticketBooking": {
-            "post": {
-                "tags": [
-                    "Customer"
-                ],
-                "summary": "API for book event tickets",
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "description": "Enter event_id that customer want to book tickets and also give seats numbers for booking",
-                        "schema": {
-                            "type": "object",
-                            "required": [
-                                "event_id",
-                                "seat_numbers"
-                            ],
-                            "properties": {
-                                "event_id": {
-                                    "type": "string"
-                                },
-                                "seat_numbers": {
-                                    "type": "array"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Ok"
-                    },
-                    "401": {
-                        "description": "Please authenticate befor sending request"
-                    },
-                    "400": {
-                        "description": "Unauthenticated person to view this details"
-                    },
-                    "404": {
-                        "description": "Can't find searched resource"
-                    }
-                }
-            }
-        },
-        "/customer/ticket/transactionUpdate": {
-            "post": {
-                "tags": [
-                    "Customer"
-                ],
-                "summary": "API for make payment to confirm book tickets",
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "description": "Enter transaction id and event id to complete tickets booking",
-                        "schema": {
-                            "type": "object",
-                            "required": [
-                                "event_id",
-                                "cTrans_id"
-                            ],
-                            "properties": {
-                                "event_id": {
-                                    "type": "string"
-                                },
-                                "cTrans_id": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Ok"
-                    },
-                    "401": {
-                        "description": "Please authenticate befor sending request"
-                    },
-                    "400": {
-                        "description": "Unauthenticated person to view this details"
-                    },
-                    "404": {
-                        "description": "Can't find searched resource"
-                    }
-                }
-            }
-        }
+    {
+      "name": "Admin",
+      "description": "APIs for Admin management in AMS"
     },
-    "definitions": {
-        "User": {
-            "required": [
-                "_id",
-                "name",
-                "email",
-                "age",
-                "role",
-                "verificationStatus",
-                "password",
-                "tokens"
-            ],
-            "properties": {
-                "_id": {
-                    "type": "string",
-                    "uniqueItems": true
-                },
-                "name": {
-                    "type": "string"
-                },
+    {
+      "name": "Customer",
+      "description": "APIs for Customer management in AMS"
+    },
+    {
+      "name": "Manager",
+      "description": "APIs for Manager management in AMS"
+    },
+    {
+      "name": "Organizer",
+      "description": "APIs for Organizer management in AMS"
+    }
+  ],
+  "produces": ["application/json"],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/users/login": {
+      "post": {
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter valid details to login user",
+            "schema": {
+              "type": "object",
+              "required": ["email", "password"],
+              "properties": {
                 "email": {
-                    "type": "string",
-                    "uniqueItems": true
-                },
-                "age": {
-                    "type": "number"
-                },
-                "role": {
-                    "type": "string"
+                  "type": "string"
                 },
                 "password": {
-                    "type": "string"
+                  "type": "string"
                 }
+              }
             }
-        },
-        "Auditorium": {
-            "required": [
-                "_id",
+          }
+        ],
+        "tags": ["General"],
+        "summary": "login for all users",
+        "responses": {
+          "200": {
+            "description": "ok"
+          },
+          "400": {
+            "description": "Error while logging into system."
+          }
+        }
+      }
+    },
+    "/users/signup": {
+      "post": {
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter user's all details for signup",
+            "schema": {
+              "type": "object",
+              "required": ["email", "password", "role", "age", "name"],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "age": {
+                  "type": "integer"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": ["General"],
+        "summary": "Signup for all users excepts manager",
+        "responses": {
+          "201": {
+            "description": "User has been created into system."
+          },
+          "400": {
+            "description": "Error while creating user."
+          }
+        }
+      }
+    },
+    "/users/me/update": {
+      "patch": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter user profile details to update profile",
+            "schema": {
+              "type": "object",
+              "required": ["email", "password", "role", "age", "name"],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "age": {
+                  "type": "integer"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": ["General"],
+        "summary": "Signup for all users excepts manager",
+        "responses": {
+          "201": {
+            "description": "User has been created into system."
+          },
+          "400": {
+            "description": "Error while creating user."
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": ["General"],
+        "summary": "Get the personal(looged user's) details.",
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "User not authenticated."
+          }
+        }
+      }
+    },
+    "/admin/adminDashboard": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": ["Admin"],
+        "summary": "Get the accsess of Admin Dashboard",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Please authenticate befor sending request"
+          },
+          "400": {
+            "description": "Unauthenticated person to view this details"
+          }
+        }
+      }
+    },
+    "/admin/managerList": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string",
+            "required": true,
+            "description": "Can query for particular manager with verification status like [Pending, True, Flase] verification"
+          }
+        ],
+        "tags": ["Admin"],
+        "summary": "Get the all manager list",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Please authenticate befor sending request"
+          },
+          "400": {
+            "description": "Unauthenticated person to view this details"
+          }
+        }
+      }
+    },
+    "/admin/setManagerStatus": {
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter 'manager id' and 'verification status of manager', whom you want to change verification status form the below options\n => [ True , False ]",
+            "schema": {
+              "type": "object",
+              "required": ["manager_id", "verificationStatus"],
+              "properties": {
+                "manager_id": {
+                  "type": "string"
+                },
+                "verificationStatus": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": ["Admin"],
+        "summary": "Get the all manager list",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Please authenticate befor sending request"
+          },
+          "400": {
+            "description": "Unauthenticated person to view this details"
+          }
+        }
+      }
+    },
+    "/customer/allEvents": {
+      "get": {
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "type": "string",
+            "description": "Enter your city name to see events in your city"
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "type": "string",
+            "description": "Enter your event category to see events in your city"
+          }
+        ],
+        "tags": ["Customer"],
+        "summary": "Get the all events list for customer",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Please authenticate befor sending request"
+          },
+          "400": {
+            "description": "Unauthenticated person to view this details"
+          }
+        }
+      }
+    },
+    "/customer/ticketBooking": {
+      "post": {
+        "tags": ["Customer"],
+        "summary": "API for book event tickets",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter event_id that customer want to book tickets and also give seats numbers for booking",
+            "schema": {
+              "type": "object",
+              "required": ["event_id", "seat_numbers"],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "seat_numbers": {
+                  "type": "array"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Please authenticate befor sending request"
+          },
+          "400": {
+            "description": "Unauthenticated person to view this details"
+          },
+          "404": {
+            "description": "Can't find searched resource"
+          }
+        }
+      }
+    },
+    "/customer/ticket/transactionUpdate": {
+      "post": {
+        "tags": ["Customer"],
+        "summary": "API for make payment to confirm book tickets",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter transaction id and event id to complete tickets booking",
+            "schema": {
+              "type": "object",
+              "required": ["event_id", "cTrans_id"],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                },
+                "cTrans_id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Please authenticate befor sending request"
+          },
+          "400": {
+            "description": "Unauthenticated person to view this details"
+          },
+          "404": {
+            "description": "Can't find searched resource"
+          }
+        }
+      }
+    },
+    "/Manager/auditoriumDetails": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": ["Manager"],
+        "summary": "Get the personal Auditorium details.",
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "$ref": "#/definitions/Auditorium"
+            }
+          },
+          "401": {
+            "description": "User not authenticated."
+          }
+        }
+      }
+    },
+    "/manager/update/auditoriumDetails": {
+      "patch": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter auditorium's update details ",
+            "schema": {
+              "type": "object",
+              "required": [
                 "auditoriumName",
                 "address",
                 "city",
                 "capacity",
-                "costPerHour",
-                "manager_id"
-            ],
-            "properties": {
-                "_id": {
-                    "type": "string",
-                    "uniqueItems": true
-                },
-                "auditoriumName": {
-                    "type": "string"
-                },
-                "address": {
-                    "type": "string",
-                    "uniqueItems": true
-                },
-                "city": {
-                    "type": "string"
+                "costPerHour"
+              ],
+              "properties": {
+                "costPerHour": {
+                  "type": "integer"
                 },
                 "capacity": {
-                    "type": "number"
+                  "type": "integer"
                 },
-                "costPerHour": {
-                    "type": "number"
+                "city": {
+                  "type": "string"
                 },
-                "manager_id": {
-                    "type": "string"
+                "auditoriumName": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
                 }
+              }
             }
+          }
+        ],
+        "tags": ["Manager"],
+        "summary": "Update Auditorium details",
+        "responses": {
+          "201": {
+            "description": "Update details Successfully",
+            "schema": {
+              "$ref": "#/definitions/Auditorium"
+            }
+          },
+          "400": {
+            "description": "Error invalid fields."
+          }
         }
+      }
+    },
+    "/manager/auditoriumEvents": {
+      "get": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "tags": ["Manager"],
+        "summary": "Get the Auditorium's Event details.",
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "$ref": "#/definitions/AuditoriumBooking"
+            }
+          },
+          "401": {
+            "description": "User not authenticated."
+          }
+        }
+      }
+    },
+    "/manager/delete/event": {
+      "delete": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter event id to remove event",
+            "schema": {
+              "type": "object",
+              "required": ["event_id"],
+              "properties": {
+                "event_id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": ["Manager"],
+        "summary": "Delete Event",
+        "responses": {
+          "201": {
+            "description": "Delete Event Successfully",
+            "schema": {
+              "$ref": "#/definitions/AuditoriumBooking"
+            }
+          },
+          "400": {
+            "description": "Error invalid fields."
+          }
+        }
+      }
+    },
+    "/organizer/auditorium": {
+      "get": {
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "type": "string",
+            "description": "get all auditorium list using filter by city"
+          }
+        ],
+        "tags": ["Organizer"],
+        "summary": "Get the all auditorium list for organizer",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Please authenticate befor sending request"
+          },
+          "400": {
+            "description": "Unauthenticated person to view this details"
+          }
+        }
+      }
+    },
+    "/organizer/getAvailableSlots": {
+      "get": {
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter auditorium id and date details ",
+            "schema": {
+              "type": "object",
+              "required": ["auditorium_id", "date"],
+              "properties": {
+                "auditorium_id": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": ["Organizer"],
+        "summary": "Get the all events list of auditorium for event booking",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Please authenticate befor sending request"
+          },
+          "400": {
+            "description": "Unauthenticated person to view this details"
+          }
+        }
+      }
+    },
+    "/organizer/bookAuditorium": {
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter all details of event for auditorium booking",
+            "schema": {
+              "type": "object",
+              "required": [
+                "timeslots",
+                "event_date",
+                "auditorium_id",
+                "description",
+                "event_name",
+                "category",
+                "event_time",
+                "ticket_price"
+              ],
+              "properties": {
+                "timeslots": {
+                  "type": "array"
+                },
+                "event_date": {
+                  "type": "string"
+                },
+                "event_time": {
+                  "type": "string"
+                },
+                "ticket_price": {
+                  "type": "number"
+                },
+                "auditorium_id": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "event_name": {
+                  "type": "string"
+                },
+                "category": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": ["Organizer"],
+        "summary": "Book auditorium for event",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Please authenticate befor sending request"
+          },
+          "400": {
+            "description": "Unauthenticated person to view this details"
+          }
+        }
+      }
+    },
+    "/organizer/audiBookingPayment/:status": {
+      "post": {
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "type": "string",
+            "description": "Enter status value True if want to make payment success otherwise enter False"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Enter event_id and amount to make payment",
+            "schema": {
+              "type": "object",
+              "required": ["event_id"],
+              "properties": {
+                "amount": {
+                  "type": "number"
+                },
+                "event_id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "tags": ["Organizer"],
+        "summary": "Check payment status for event booking",
+        "responses": {
+          "200": {
+            "description": "Ok"
+          },
+          "401": {
+            "description": "Please authenticate befor sending request"
+          },
+          "400": {
+            "description": "Unauthenticated person to view this details"
+          }
+        }
+      }
     }
+  },
+  "definitions": {
+    "User": {
+      "required": [
+        "_id",
+        "name",
+        "email",
+        "age",
+        "role",
+        "verificationStatus",
+        "password",
+        "tokens"
+      ],
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "age": {
+          "type": "number"
+        },
+        "role": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "Auditorium": {
+      "required": [
+        "_id",
+        "auditoriumName",
+        "address",
+        "city",
+        "capacity",
+        "costPerHour",
+        "manager_id"
+      ],
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "auditoriumName": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "city": {
+          "type": "string"
+        },
+        "capacity": {
+          "type": "number"
+        },
+        "costPerHour": {
+          "type": "number"
+        },
+        "manager_id": {
+          "type": "string"
+        }
+      }
+    },
+    "AuditoriumBooking": {
+      "required": [
+        "_id",
+        "event_date",
+        "event_time",
+        "timeSlots",
+        "city",
+        "capacity",
+        "total_cost",
+        "organizer_id",
+        "auditorium_id",
+        "description",
+        "event_name",
+        "category",
+        "ticket_price",
+        "total_tickets",
+        "available_tickets",
+        "status"
+      ],
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "event_date": {
+          "type": "string"
+        },
+        "event_time": {
+          "type": "string"
+        },
+        "timeSlots": {
+          "type": "number"
+        },
+        "city": {
+          "type": "string"
+        },
+        "capacity": {
+          "type": "number"
+        },
+        "total_cost": {
+          "type": "number"
+        },
+        "ticket_price": {
+          "type": "number"
+        },
+        "total_tickets": {
+          "type": "number"
+        },
+        "available_tickets": {
+          "type": "number"
+        },
+        "organizer_id": {
+          "type": "string"
+        },
+        "auditorium_id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "event_name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "AuditoriumBookingPayment": {
+      "required": ["_id", "amount", "event_id", "user_id", "status"],
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "amount": {
+          "type": "number"
+        },
+        "user_id": {
+          "type": "string"
+        },
+        "event_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "TicketTransaction": {
+      "required": [
+        "_id",
+        "total_price",
+        "event_id",
+        "user_id",
+        "status",
+        "tickets",
+        "seat_numbers"
+      ],
+      "properties": {
+        "_id": {
+          "type": "string",
+          "uniqueItems": true
+        },
+        "total_price": {
+          "type": "number"
+        },
+        "seat_numbers": {
+          "type": "array"
+        },
+        "user_id": {
+          "type": "string"
+        },
+        "event_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "tickets": {
+          "seat_no": {
+            "type": "integer"
+          },
+          "t_price": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
 }
