@@ -5,7 +5,7 @@ import { UserContext } from "../../App";
 import NavBar from "../Navbar";
 import Footer from "../Footer";
 
-const UserLogin = () => {
+const Login = () => {
   const history = useHistory();
   const [password, setPasword] = useState("");
   const [email, setEmail] = useState("");
@@ -84,4 +84,4 @@ const UserLogin = () => {
   );
 };
 
-export default UserLogin;
+export default Login;

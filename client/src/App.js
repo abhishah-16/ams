@@ -2,11 +2,11 @@ import react from 'react'
 import './App.css';
 import {  Route, useHistory, Routes, BrowserRouter } from "react-router-dom";
 import Home from './components/screens/Home';
-import UserLogin from './components/screens/UserLogin';
-import UserSignup from './components/screens/UserSignup';
-import NavBar from './components/Navbar';
-import Footer from './components/Footer';
+import Login from './components/screens/Login';
 import SignUp from './components/screens/Signup';
+import ManagerSignup from './components/screens/ManagerSignup';
+import OrganizerSignup from './components/screens/OrganizerSignup';
+import CustomerSignup from './components/screens/CustomerSignup';
 
 
 // const Routing = () => {
@@ -40,13 +40,19 @@ function App() {
       <Home/>
     </Route>
     <Route exact path='/login'>
-      <UserLogin/>
+      <Login/>
     </Route>
     <Route exact path='/signup'>
       <SignUp/>
     </Route>
-    <Route exact path='/csignup'>
-      <UserSignup/>
+    <Route exact path='/customer/signup'>
+      <CustomerSignup/>
+    </Route>
+    <Route exact path='/manager/signup'>
+      <ManagerSignup/>
+    </Route>
+    <Route exact path='/organizer/signup'>
+      <OrganizerSignup/>
     </Route>
     </BrowserRouter>
     

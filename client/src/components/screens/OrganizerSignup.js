@@ -1,10 +1,10 @@
-import React, { useState,useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { Link, useHistory, useLocation } from 'react-router-dom'
 import M from 'materialize-css'
 import NavBar from '../Navbar'
 import Footer from "../Footer";
 
-const UserSignup = () => {
+const OrganizerSignup = () => {
     const history = useHistory()
     const location = useLocation();
     const [name, setName] = useState("")
@@ -13,13 +13,11 @@ const UserSignup = () => {
     const [age, setage] = useState("")
     const [role, setRole] = useState("")
 
-    useEffect((req,res) => {
-        var d1 = location.state.data;
     
-        console.log("d1",d1.r);
-        setRole(d1.r);
-         
-      }, [location]);
+    useEffect((req, res) => {
+        var role = location.state;
+        setRole(role.role);
+    }, [location]);
 
     const PostData = () => {
         if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
@@ -44,7 +42,7 @@ const UserSignup = () => {
                     M.toast({ html: data.error, classes: "#c62828 red darken-3" })
                 }
                 else {
-                    console.log("msg",data.message,data.error)
+                    console.log("msg", data.message, data.error)
                     M.toast({ html: "signed up successfully", classes: "#43a047 green darken-1" })
                     history.push('/login')
                 }
@@ -89,6 +87,7 @@ const UserSignup = () => {
                         placeholder="Ex. manager,user,organizer"
                         value={role}
                         onChange={(e) => setRole(e.target.value)}
+                        disabled={true}
                     />
                     <button className="btn waves-effect waves-light text-white blue darken-1 p-auto"
                         onClick={() => PostData()}
@@ -106,4 +105,4 @@ const UserSignup = () => {
     )
 }
 
-export default UserSignup
+export default OrganizerSignup
