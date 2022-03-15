@@ -13,12 +13,27 @@
     "tags": [
         {
             "name": "Users",
-            "description": "APIs for users management in AMS"
+            "description": "APIs to handle general task like Login, Signup, Profile, Logout"
+        },
+        {
+            "name": "Admin",
+            "description": "APIs for Admin management in AMS"
+        },
+        {
+            "name": "Customer",
+            "description": "APIs for Customer management in AMS"
         }
     ],
     "produces": [
         "application/json"
     ],
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
     "paths": {
         "/users/login": {
             "post": {
@@ -110,8 +125,13 @@
                 }
             }
         },
-        "/users/me": {
+        "/users/me/update": {
             "patch": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "body",
@@ -163,6 +183,11 @@
         },
         "/users/me": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "tags": [
                     "Users"
                 ],
@@ -180,8 +205,46 @@
                 }
             }
         },
-        "/users/managerList": {
+        "/admin/adminDashboard": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get the accsess of Admin Dashboard",
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "401": {
+                        "description": "Please authenticate befor sending request"
+                    },
+                    "400": {
+                        "description": "Unauthenticated person to view this details"
+                    }
+                }
+            }
+        },
+        "/admin/managerList": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "type": "string",
+                        "required": true,
+                        "description": "Can query for particular manager with verification status like [Pending, True, Flase] verification"
+                    }
+                ],
                 "tags": [
                     "Admin"
                 ],
@@ -193,14 +256,19 @@
                     "401": {
                         "description": "Please authenticate befor sending request"
                     },
-                    "400":{
-                        "description":"Unauthenticated person to view this details"
+                    "400": {
+                        "description": "Unauthenticated person to view this details"
                     }
                 }
             }
         },
-        "/users/setManagerStatus": {
+        "/admin/setManagerStatus": {
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "parameters": [
                     {
                         "name": "body",
@@ -217,10 +285,9 @@
                                 "manager_id": {
                                     "type": "string"
                                 },
-                                "verificationStatus":{
-                                    "type":"string"
+                                "verificationStatus": {
+                                    "type": "string"
                                 }
-                                
                             }
                         }
                     }
@@ -236,8 +303,146 @@
                     "401": {
                         "description": "Please authenticate befor sending request"
                     },
-                    "400":{
-                        "description":"Unauthenticated person to view this details"
+                    "400": {
+                        "description": "Unauthenticated person to view this details"
+                    }
+                }
+            }
+        },
+        "/customer/allEvents": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "query",
+                        "type": "string",
+                        "description": "Enter 'manager id' and 'verification status of manager', whom you want to change verification status form the below options\n => [ True , False ]"
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "type": "string",
+                        "description": "Enter 'manager id' and 'verification status of manager', whom you want to change verification status form the below options\n => [ True , False ]"
+                    }
+                ],
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Get the all events list for customer",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "401": {
+                        "description": "Please authenticate befor sending request"
+                    },
+                    "400": {
+                        "description": "Unauthenticated person to view this details"
+                    }
+                }
+            }
+        },
+        "/customer/ticketBooking": {
+            "post": {
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "API for book event tickets",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Enter event_id that customer want to book tickets and also give seats numbers for booking",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "event_id",
+                                "seat_numbers"
+                            ],
+                            "properties": {
+                                "event_id": {
+                                    "type": "string"
+                                },
+                                "seat_numbers": {
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "401": {
+                        "description": "Please authenticate befor sending request"
+                    },
+                    "400": {
+                        "description": "Unauthenticated person to view this details"
+                    },
+                    "404": {
+                        "description": "Can't find searched resource"
+                    }
+                }
+            }
+        },
+        "/customer/ticket/transactionUpdate": {
+            "post": {
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "API for make payment to confirm book tickets",
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Enter transaction id and event id to complete tickets booking",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "event_id",
+                                "cTrans_id"
+                            ],
+                            "properties": {
+                                "event_id": {
+                                    "type": "string"
+                                },
+                                "cTrans_id": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok"
+                    },
+                    "401": {
+                        "description": "Please authenticate befor sending request"
+                    },
+                    "400": {
+                        "description": "Unauthenticated person to view this details"
+                    },
+                    "404": {
+                        "description": "Can't find searched resource"
                     }
                 }
             }
@@ -246,13 +451,20 @@
     "definitions": {
         "User": {
             "required": [
-                "name",
                 "_id",
+                "name",
                 "email",
                 "age",
-                "role"
+                "role",
+                "verificationStatus",
+                "password",
+                "tokens"
             ],
             "properties": {
+                "_id": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
                 "name": {
                     "type": "string"
                 },
@@ -271,9 +483,41 @@
                 }
             }
         },
-        "Users": {
-            "type": "array",
-            "$ref": "#/definitions/User"
+        "Auditorium": {
+            "required": [
+                "_id",
+                "auditoriumName",
+                "address",
+                "city",
+                "capacity",
+                "costPerHour",
+                "manager_id"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "auditoriumName": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "city": {
+                    "type": "string"
+                },
+                "capacity": {
+                    "type": "number"
+                },
+                "costPerHour": {
+                    "type": "number"
+                },
+                "manager_id": {
+                    "type": "string"
+                }
+            }
         }
     }
 }

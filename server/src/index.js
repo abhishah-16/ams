@@ -26,6 +26,20 @@ const swaggerOptions={
             server:["http://localhost:5000"]
         }
     },
+    components: {
+        securitySchemes: {
+          jwt: {
+            type: "http",
+            scheme: "bearer",
+            in: "header",
+            bearerFormat: "JWT"
+          },
+        }
+      }
+      ,
+      security: [{
+        jwt: []
+      }],
     apis:["./routers/*.js"]
 }
 const swaggerDocs = swaggerJsDOc(swaggerOptions)

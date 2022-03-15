@@ -4,11 +4,12 @@ const User = require('../models/user')
 const Auditorium = require('../models/auditorium')
 const { authToken, isAdmin } = require("../middlewares/authRole")
 const { sendVerificationRejectedMail, sendVerificationAcceptedMail } = require("../emails/accounts")
-router.get("/users/managerList", [authToken, isAdmin], async (req, res) => {
+
+router.get("/admin/managerList", [authToken, isAdmin], async (req, res) => {
     try {
-        const status = req.query.status
+        let query = req.query.status ? {verificationStatus:req.query.status,role:"manager"} : {} 
         const pendingList = []
-        const managerList = await User.find({ verificationStatus: status, role: "manager" })
+        const managerList = await User.find(query)
         for(let manager of managerList){
             const auditorium = await Auditorium.find({ manager_id: manager.id })
             delete auditorium._id
@@ -21,7 +22,7 @@ router.get("/users/managerList", [authToken, isAdmin], async (req, res) => {
     }
 })
 
-router.post('/users/setManagerStatus', [authToken, isAdmin], async (req, res) => {
+router.post('/admin/setManagerStatus', [authToken, isAdmin], async (req, res) => {
     try {
         const Updatedmanager = await User.findByIdAndUpdate(req.body.managerId, { verificationStatus: req.body.verificationStatus }, { new: true, runValidators: true })
         if (Updatedmanager) {
@@ -38,7 +39,7 @@ router.post('/users/setManagerStatus', [authToken, isAdmin], async (req, res) =>
     }
 })
 
-router.get("/users/acceptedList", [authToken, isAdmin], async (req, res) => {
+router.get("/admin/acceptedList", [authToken, isAdmin], async (req, res) => {
     try {
         var pendingList = []
         const managerList = await User.find({ verificationStatus: "true", role: "manager" })
@@ -47,7 +48,7 @@ router.get("/users/acceptedList", [authToken, isAdmin], async (req, res) => {
         res.status(400).send(err.message)
     }
 })
-router.get("/users/rejectedList", [authToken, isAdmin], async (req, res) => {
+router.get("/admin/rejectedList", [authToken, isAdmin], async (req, res) => {
     try {
         var pendingList = []
         const managerList = await User.find({ verificationStatus: "false", role: "manager" })
@@ -57,7 +58,7 @@ router.get("/users/rejectedList", [authToken, isAdmin], async (req, res) => {
     }
 })
 
-router.get("/users/adminDashboard", [authToken, isAdmin], async (req, res) => {
+router.get("/admin/adminDashboard", [authToken, isAdmin], async (req, res) => {
     try {
         res.status(201).send("Admin dashboard")
     } catch (err) {

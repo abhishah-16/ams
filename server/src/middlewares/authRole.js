@@ -1,12 +1,11 @@
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
 const authToken = async (req, res, next) => {
+    console.log("auth")
     try {
         const token = req.header('Authorization').split(" ")[1]
-        console.log("header:",token)
         const decoded = jwt.verify(token, process.env.JWTSECRETE)
         const user = await User.findOne({ _id: decoded._id, 'tokens.token': token })
-
         if (!user) {
             throw new Error("User not authorized.") 
         }

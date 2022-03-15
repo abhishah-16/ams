@@ -93,11 +93,13 @@ router.get("/customer/allEvents", [authToken, isUser], async (req, res) => {
 //     });
 // )
 
-router.post("/event_booking", [authToken, isUser], async (req, res) => {
-  const event = await AuditoriumBooking.findById(req.body.event_id);
-  const total_seats = req.body.seat_numbers.length;
-  try {
+router.post("/customer/ticketBooking", [authToken, isUser], async (req, res) => {
 
+  try {
+    const event = await AuditoriumBooking.findById(req.body.event_id);
+    if (!event)
+      throw new Error("can't find event")
+    const total_seats = req.body.seat_numbers.length;
     const ticketTransaction = new TicketTransaction({
       seat_numbers: req.body.seat_numbers,
       total_price: event.ticket_price * total_seats,
@@ -105,21 +107,25 @@ router.post("/event_booking", [authToken, isUser], async (req, res) => {
       user_id: req.user._id,
     });
     await ticketTransaction.save();
-    res.send(ticketTransaction);
+    res.status(200).send(ticketTransaction);
   } catch (err) {
-    res.send({ error: err.message });
+    res.status(404).send({ error: err.message });
   }
 });
 
-router.post('/customer/ticket/statusUpdate', [authToken, isUser], async (req, res) => {
+router.post('/customer/ticket/transactionUpdate', [authToken, isUser], async (req, res) => {
   try {
     let tTransaction = await TicketTransaction.findById(req.body.cTrans_id);
+    if(!tTransaction)
+     throw new Error("Invalid transaction id")
     if (tTransaction.status == "confirmed") {
       throw new Error("Payment is already done")
     }
     else {
       const event = await AuditoriumBooking.findById(req.body.event_id);
-
+      console.log("even",event)
+      // if(!event) 
+      //   throw new Error("event or transaction not found2")
       for (const s of tTransaction.seat_numbers) {
         TicketTransaction.findOneAndUpdate(
           { _id: req.body.cTrans_id },
@@ -139,46 +145,46 @@ router.post('/customer/ticket/statusUpdate', [authToken, isUser], async (req, re
         }
       }, { new: true })
     }
-    res.send({ message: "Payment Done!" })
+    res.status(200).send({ message: "Payment Done!" })
   } catch (err) {
-    res.send({ error: err.message });
+    res.status(400).send({ error: err.message });
   }
 })
 
 router.post("/customer/ticketPayment", async (req, res) => {
   try {
-      const sender = req.body.sender
-      const receiver = req.body.receiver
-      const amount = req.body.amount
+    const sender = req.body.sender
+    const receiver = req.body.receiver
+    const amount = req.body.amount
 
-      const session = await mongoose.startSession()
-      session.startTransaction()
+    const session = await mongoose.startSession()
+    session.startTransaction()
 
-      try {
-          const sender = await User.findById(req.body.sender).session(session)
-          if (sender.wallet < amount)
-              throw new Error(`User ${sender.first_name} you have insufficient balance`)
-          else
-              sender.wallet = sender.wallet - amount;
+    try {
+      const sender = await User.findById(req.body.sender).session(session)
+      if (sender.wallet < amount)
+        throw new Error(`User ${sender.first_name} you have insufficient balance`)
+      else
+        sender.wallet = sender.wallet - amount;
 
-          const receiver = await User.findById(req.body.receiver).session(session)
-          receiver.wallet = receiver.wallet + amount
+      const receiver = await User.findById(req.body.receiver).session(session)
+      receiver.wallet = receiver.wallet + amount
 
-          await sender.save()
-          await receiver.save()
-          await session.commitTransaction()
+      await sender.save()
+      await receiver.save()
+      await session.commitTransaction()
 
-          return res.json({ sender: sender.first_name, receiver: receiver.first_name, amount: amount, yourBalance: sender.wallet })
+      return res.json({ sender: sender.first_name, receiver: receiver.first_name, amount: amount, yourBalance: sender.wallet })
 
-      } catch (err) {
-          console.log("in abort :", err.message)
-          await session.abortTransaction()
-      } finally {
-          session.endSession()
-      }
+    } catch (err) {
+      console.log("in abort :", err.message)
+      await session.abortTransaction()
+    } finally {
+      session.endSession()
+    }
   } catch (err) {
-      console.log("err", err.message)
-      return res.send(`Transaction falied`)
+    console.log("err", err.message)
+    return res.send(`Transaction falied`)
   }
 })
 

@@ -30,17 +30,17 @@ const AuditoriumSchema = new mongooese.Schema(
             type:Number,
             required:true
         },
-        BookedSlots: [{
-            slot: {
-                type: Number,
-            },
-            startTime: {
-                type: Number
-            },
-            endTime: { type: Number },
-            status:{type:Boolean}
-        }
-        ],
+        // BookedSlots: [{
+        //     slot: {
+        //         type: Number,
+        //     },
+        //     startTime: {
+        //         type: Number
+        //     },
+        //     endTime: { type: Number },
+        //     status:{type:Boolean}
+        // }
+        // ],
         manager_id: {
             type: mongooese.Schema.Types.ObjectId,
             required: true,
