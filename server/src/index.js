@@ -21,11 +21,26 @@ const swaggerOptions={
             title:"Auditorium Management System API",
             description:"APIs for manage auditorium details",
             conatact:{
-                name:"Jay patel"
+                name:"Jay patel & Ajay Pipaliya"
             },
             server:["http://localhost:5000"]
         }
     },
+    components: {
+        securitySchemes: {
+          jwt: {
+            type: "http",
+            scheme: "bearer",
+            in: "header",
+            bearerFormat: "JWT"
+          },
+        }
+      }
+      ,
+      security: [{
+        jwt: []
+      }],
+    swagger: "2.0",
     apis:["./routers/*.js"]
 }
 const swaggerDocs = swaggerJsDOc(swaggerOptions)
