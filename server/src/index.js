@@ -20,7 +20,7 @@ const swaggerOptions={
         info:{
             title:"Auditorium Management System API",
             description:"APIs for manage auditorium details",
-            conatact:{
+            contact:{
                 name:"Jay patel & Ajay Pipaliya"
             },
             server:["http://localhost:5000"]
