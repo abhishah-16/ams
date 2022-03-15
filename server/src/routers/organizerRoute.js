@@ -59,6 +59,9 @@ router.get("/organizer/getAvailableSlots", [authToken, isOrganizer], async (req,
     try {
         const audiId = req.body.auditorium_id
         const date = req.body.date
+        const status = isValidBookingDate(date)
+        if (status != "booked")
+            return res.send({ status })
         let bookedSlots = await AuditoriumBooking.aggregate([
             { $match: { auditorium_id: ObjectId(audiId), event_date: date } },
             { $project: { timeSlots: 1, _id: 0 } }
