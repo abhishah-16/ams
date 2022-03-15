@@ -264,11 +264,7 @@
         },
         "/admin/setManagerStatus": {
             "post": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
+                "security": [{"Bearer":[]}],    
                 "parameters": [
                     {
                         "name": "body",
