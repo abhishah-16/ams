@@ -46,6 +46,11 @@ const ManagerSignup = () => {
         password,
         age,
         role,
+        audiName,
+        cost,
+        capacity,
+        address,
+        city
       }),
     })
       .then((res) => res.json())

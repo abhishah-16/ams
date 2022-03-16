@@ -10,7 +10,7 @@ const CustomerSignup = () => {
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPasword] = useState("")
-    const [age, setage] = useState("")
+    const [age, setage] = useState()
     const [role, setRole] = useState("")
 
     
@@ -79,7 +79,7 @@ const CustomerSignup = () => {
                         onChange={(e) => setPasword(e.target.value)}
                     />
                     <input
-                        type="Number"
+                        type="number"
                         placeholder="age No."
                         value={age}
                         onChange={(e) => setage(e.target.value)}

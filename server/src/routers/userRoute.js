@@ -7,7 +7,7 @@ const { sendWelcomeMail, sendVerificationPendingMail } = require('../emails/acco
 const { authToken, isAdmin, isManagerSignup } = require('../middlewares/authRole')
 
 router.post("/users/signup", isManagerSignup, async (req, res) => {
-    //console.log("valids fields..")
+    console.log("valids fields..")
     const user = new User({
         //...req.body,
         name: req.body.name,
@@ -22,12 +22,12 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
       
         if (req.body.role == "manager") {
             const auditorium = new Auditorium({
-                auditoriumName: req.body.auditoriumName,
+                auditoriumName: req.body.audiName,
                 address: req.body.address,
                 capacity: req.body.capacity,
                 city: req.body.city,
                 manager_id: user._id,
-                costPerHour:req.body.costPerHour
+                costPerHour:req.body.cost
             })
             await auditorium.save()
             sendVerificationPendingMail(user.email, user.name)

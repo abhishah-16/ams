@@ -20,8 +20,9 @@ const authToken = async (req, res, next) => {
 }
 
 const isManagerSignup = async(req,res,next) => {
+    console.log("bnody",req.body)
     if(req.body.role=="manager"){
-    const requiredFields = ['name','email','password','role','auditoriumName','address','city','capacity']
+    const requiredFields = ['name','email','password','role','audiName','address','city','capacity','cost']
     const manager = await Object.keys(req.body)
     const isValidManager = await requiredFields.every((field) => manager.includes(field))
     if(!isValidManager){
