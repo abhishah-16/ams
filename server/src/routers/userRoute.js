@@ -37,7 +37,7 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
         sendWelcomeMail(user.email, user.name)
         res.status(201).send({ user, token })
     } catch (err) {
-        res.status(400).send(err.message)
+        res.status(400).send({error:err.message})
     }
 })
 

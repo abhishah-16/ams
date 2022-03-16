@@ -10,7 +10,7 @@ const ManagerSignup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPasword] = useState("");
-  const [age, setAge] = useState("");
+  const [age, setAge] = useState();
   const [role, setRole] = useState("");
   const [audiName, setAudiName] = useState("");
   const [address, setAddress] = useState("");
@@ -27,14 +27,7 @@ const ManagerSignup = () => {
   );
 
   const PostData = () => {
-    if (
-      !/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-        email
-      )
-    ) {
-      M.toast({ html: "invalid email", classes: "#c62828 red darken-3" });
-      return;
-    }
+
     fetch("/users/signup", {
       method: "post",
       headers: {
@@ -56,9 +49,9 @@ const ManagerSignup = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.error) {
+            console.log("msg", data.error);
           M.toast({ html: data.error, classes: "#c62828 red darken-3" });
         } else {
-          console.log("msg", data.message, data.error);
           M.toast({
             html: "signed up successfully",
             classes: "#43a047 green darken-1",
@@ -67,7 +60,7 @@ const ManagerSignup = () => {
         }
       })
       .catch((err) => {
-        console.log(err.message);
+        M.toast({ html: err.message, classes: "#c62828 red darken-3" });
       });
   };
 

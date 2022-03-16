@@ -26,34 +26,34 @@ const isManagerSignup = async(req,res,next) => {
     const manager = await Object.keys(req.body)
     const isValidManager = await requiredFields.every((field) => manager.includes(field))
     if(!isValidManager){
-        return res.status(400).send("Please fill all required fields..")
+        return res.status(400).send({error:"Please fill all required fields.."})
     }
-}
     next()
-}
+}}
+
 const isManager = async (req, res, next) => {
     //console.log("ROle m:",req.user.role)
     if (req.user.role !== "manager")
-        return res.status(401).send("Unauthorized person..")
+        return res.status(401).send({error:"Unauthorized person.."})
     next()
 }
 const isAdmin = async (req, res, next) => {
     //console.log("role a : ", req.user.role)
     //console.log("ROle a:",req.user.role)
     if (req.user.role !== "admin")
-        return res.status(401).send("Unauthorized person..")
+        return res.status(401).send({error:"Unauthorized person.."})
     next()
 }
 const isUser = async (req, res, next) => {
     //console.log("ROle :",req.user.role)
     if (req.user.role !== "customer")
-        return res.status(401).send("Unauthorized person..")
+        return res.status(401).send({error:"Unauthorized person.."})
     next()
 }
 const isOrganizer = async (req, res, next) => {
     console.log("ROle :",req.user.role)
     if (req.user.role !== "organizer")
-        return res.status(401).send("1Unauthorized person..")
+        return res.status(401).send({error:"Unauthorized person.."})
     next()
 }
 
