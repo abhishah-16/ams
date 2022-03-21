@@ -45,7 +45,7 @@ const isAdmin = async (req, res, next) => {
     next()
 }
 const isUser = async (req, res, next) => {
-    //console.log("ROle :",req.user.role)
+    // console.log("ROle :",req.user.role)
     if (req.user.role !== "customer")
         return res.status(401).send({error:"Unauthorized person.."})
     next()

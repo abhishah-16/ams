@@ -82,7 +82,7 @@ router.get("/users/me", authToken, async (req, res) => {
     res.status(200).send(req.user)
 })
 
-router.patch("/users/me/update", authToken, async (req, res) => {
+router.patch("/users/update/me", authToken, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ["name", "email", "password", "age"]
     const isValidUpdate = updates.every((update) => allowedUpdates.includes(update))

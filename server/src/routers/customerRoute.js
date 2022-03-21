@@ -9,6 +9,15 @@ const time = require("../models/alllSlots.json");
 const { ObjectId } = require("mongodb");
 const { isValidBookingDate } = require("../utils/utils");
 
+router.post('/role/update',async(req,res)=>{
+  let tTransaction = await User.findOneAndUpdate({ role:'user' }, {
+    $set: {
+      role: "customer"
+    }
+  }, { new: true })
+  res.send(tTransaction);
+})
+
 function AllTime(allTimings) {
   time.map((timing) => allTimings.push(timing.time));
   return allTimings;
@@ -124,8 +133,8 @@ router.post('/customer/ticket/transactionUpdate', [authToken, isUser], async (re
     else {
       const event = await AuditoriumBooking.findById(req.body.event_id);
       console.log("even",event)
-      // if(!event) 
-      //   throw new Error("event or transaction not found2")
+      if(!event) 
+        throw new Error("event or transaction not found2")
       for (const s of tTransaction.seat_numbers) {
         TicketTransaction.findOneAndUpdate(
           { _id: req.body.cTrans_id },
@@ -144,6 +153,7 @@ router.post('/customer/ticket/transactionUpdate', [authToken, isUser], async (re
           status: "confirmed"
         }
       }, { new: true })
+
     }
     res.status(200).send({ message: "Payment Done!" })
   } catch (err) {
@@ -151,41 +161,58 @@ router.post('/customer/ticket/transactionUpdate', [authToken, isUser], async (re
   }
 })
 
-router.post("/customer/ticketPayment", async (req, res) => {
-  try {
-    const sender = req.body.sender
-    const receiver = req.body.receiver
-    const amount = req.body.amount
-
-    const session = await mongoose.startSession()
-    session.startTransaction()
-
+router.post("/customer/eventBookingPayment/:status", [authToken, isUser], async (req, res) => {
     try {
-      const sender = await User.findById(req.body.sender).session(session)
-      if (sender.wallet < amount)
-        throw new Error(`User ${sender.first_name} you have insufficient balance`)
-      else
-        sender.wallet = sender.wallet - amount;
 
-      const receiver = await User.findById(req.body.receiver).session(session)
-      receiver.wallet = receiver.wallet + amount
+        const event_id = req.body.event_id
+        const amount = req.body.amount
+        const sender = req.user._id
+        const { status } = await TicketTransaction.findById(req.body.cTrans_id)
+        console.log("status", status)
+        if (status == "Confirmed")
+            throw new Error("Payment already completed")
+        const session = await mongoose.startSession()
+        session.startTransaction()
 
-      await sender.save()
-      await receiver.save()
-      await session.commitTransaction()
+        try {
+            const { total_cost } = await AuditoriumBooking.findById(req.body.event_id)
+            const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "True" })
+            console.log("com", amount, total_cost)
+            console.log("1")
+            if (req.params.status == "True") {
+            console.log("2")
+                if (amount < total_cost || amount > total_cost)
+                    throw new Error(`User ${sender.name} you have enter wrong amount`)
+                else if (amount == total_cost) {
+                    await AuditoriumBooking.findByIdAndUpdate(event_id, { status: "True" })
+                    await bookingConfirmation.save()
+                    await session.commitTransaction()
+                    return res.json({ amount, status: bookingConfirmation.status })
+                }
+            }
+            else {
+                console.log("falied payment")
+                await AuditoriumBooking.findByIdAndDelete(event_id)
+                const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "False" })
+                await bookingConfirmation.save()
+                await session.commitTransaction()
+                return res.json({ amount, status: bookingConfirmation.status ,message:"Booking has been cancel"})
+            }
+        } catch (err) {
+            const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "Pending" })
+            await bookingConfirmation.save()
+            console.log("in abort :", err.message)
+            await session.abortTransaction()
+            return res.json({ amount, status: bookingConfirmation.status, error: err.message })
 
-      return res.json({ sender: sender.first_name, receiver: receiver.first_name, amount: amount, yourBalance: sender.wallet })
+        } finally {
+            session.endSession()
+        }
 
     } catch (err) {
-      console.log("in abort :", err.message)
-      await session.abortTransaction()
-    } finally {
-      session.endSession()
+        console.log("err", err.message)
+        return res.send({ error: err.message })
     }
-  } catch (err) {
-    console.log("err", err.message)
-    return res.send(`Transaction falied`)
-  }
 })
 
 module.exports = router;
