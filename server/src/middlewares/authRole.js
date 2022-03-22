@@ -28,8 +28,9 @@ const isManagerSignup = async(req,res,next) => {
     if(!isValidManager){
         return res.status(400).send({error:"Please fill all required fields.."})
     }
-    next()
-}}
+}
+next()
+}
 
 const isManager = async (req, res, next) => {
     //console.log("ROle m:",req.user.role)
