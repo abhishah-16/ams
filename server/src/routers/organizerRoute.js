@@ -9,8 +9,10 @@ const { query } = require("express")
 const AuditoriumBooking = require('../models/auditoriumBooking')
 const time = require('../models/alllSlots.json')
 const { ObjectId } = require("mongodb")
-const { isValidBookingDate } = require("../utils/utils")
+const { isValidBookingDate, isValidEventUpdateDate } = require("../utils/utils")
 const AudiBookingPayment = require("../models/audiBookingPayment")
+const { find } = require("../models/auditorium")
+const audiBookingPayment = require("../models/audiBookingPayment")
 // function AllTime(allTimings) {
 //     time.map((timing) => allTimings.push(timing.time));
 //     return allTimings;
@@ -76,6 +78,7 @@ router.get("/organizer/getAvailableSlots", [authToken, isOrganizer], async (req,
     }
 })
 
+
 router.post("/organizer/bookAuditorium", [authToken, isOrganizer], async (req, res) => {
     try {
         const timeSlots = req.body.timeSlots
@@ -99,6 +102,7 @@ router.post("/organizer/bookAuditorium", [authToken, isOrganizer], async (req, r
     }
 })
 
+
 router.post("/organizer/audiBookingPayment/:status", [authToken, isOrganizer], async (req, res) => {
     try {
 
@@ -113,12 +117,13 @@ router.post("/organizer/audiBookingPayment/:status", [authToken, isOrganizer], a
         session.startTransaction()
 
         try {
+
             const { total_cost } = await AuditoriumBooking.findById(req.body.event_id)
             const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "True" })
             console.log("com", amount, total_cost)
             console.log("1")
             if (req.params.status == "True") {
-            console.log("2")
+                console.log("2")
                 if (amount < total_cost || amount > total_cost)
                     throw new Error(`User ${sender.name} you have enter wrong amount`)
                 else if (amount == total_cost) {
@@ -134,7 +139,7 @@ router.post("/organizer/audiBookingPayment/:status", [authToken, isOrganizer], a
                 const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "False" })
                 await bookingConfirmation.save()
                 await session.commitTransaction()
-                return res.json({ amount, status: bookingConfirmation.status ,message:"Booking has been cancel"})
+                return res.json({ amount, status: bookingConfirmation.status, message: "Booking has been cancel" })
             }
         } catch (err) {
             const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "Pending" })
@@ -152,4 +157,79 @@ router.post("/organizer/audiBookingPayment/:status", [authToken, isOrganizer], a
         return res.send({ error: err.message })
     }
 })
+
+router.get("/organizer/allEvents", [authToken, isOrganizer], async (req, res) => {
+    try {
+        let match = {}
+        if (req.query._id)
+            match = { organizer_id: req.user._id }
+        else match = req.query ? req.query : {};
+        console.log("query", match)
+        const allEvents = await AuditoriumBooking.aggregate([
+            { $match: match },
+        ]);
+        res.send(allEvents);
+    } catch (err) {
+        res.send({ error: err.message });
+    }
+});
+
+router.patch(('/organizer/update/eventDetails/:eventId'), [authToken, isOrganizer], async (req, res) => {
+
+    try {
+        const eventId = req.params.eventId
+        const updates = Object.keys(req.body)
+        const allowedUpdates = ["description", "event_name", "category", "ticket_price"]
+        const isValidUpdate = updates.every((update) => allowedUpdates.includes(update))
+        const event = await AuditoriumBooking.findById(eventId)
+        if (event.total_tickets != event.available_tickets)
+            res.status(400).send({ error: "Now you can't update ticket price" })
+
+        if (!isValidUpdate)
+            return res.status(400).send("Invalid Updates..")
+
+        if (!isValidEventUpdateDate(event.event_date))
+            return res.status(400).send({ error: "can't update event details now" })
+
+        console.log("_id : ", req.user._id)
+        try {
+            const updatedEvent = await AuditoriumBooking.findOneAndUpdate({ _id: eventId }, req.body, { new: true, runValidators: true })
+            if (!updatedEvent)
+                return res.status(404).send("Event not found")
+            res.status(200).send(updatedEvent)
+        } catch (err) {
+            res.status(400).send(err.message)
+        }
+    } catch (err) {
+        res.status(400).send({ error: err.message })
+    }
+})
+
+
+router.get("/organizer/purchaseHistory", [authToken,isOrganizer],async (req, res) => {
+
+    try {
+        let match = {user_id: req.user._id }
+        let sort = {}
+        if(req.query.status)
+        Object.assign(match,{status:req.query.status})
+        console.log(match)
+        if(req.query.sortBy)
+        {
+            let sortBy = req.query.sortBy.split(" ")[0]
+            let  order = req.query.sortBy.split(" ")[1]
+            sort = {[sortBy]:Number(order)}
+        }
+        
+        console.log("sort",sort)
+        const purchaseHistory = await audiBookingPayment.aggregate([
+            { $match:match },
+            {$sort:sort}
+        ])
+        res.status(200).send(purchaseHistory)
+    } catch (err) {
+        res.status(400).send({ error: err.message })
+    }
+})
+
 module.exports = router
