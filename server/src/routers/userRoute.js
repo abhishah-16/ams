@@ -38,6 +38,7 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
         res.status(201).send({ user, token })
     } catch (err) {
         res.status(400).send({error:err.message})
+        
     }
 })
 
@@ -51,7 +52,7 @@ router.post("/users/login", async (req, res) => {
         res.status(200).send({ user, token })
     } catch (err) {
         //console.log("in login catch")
-        res.status(400).send(err.message)
+        res.status(400).send({error:err.message})
     }
 })
 
