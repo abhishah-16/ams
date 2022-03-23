@@ -36,7 +36,7 @@ const ticketTranactionSchema = new mongooese.Schema(
     status: {
       type: String,
       trim: true,
-      default: "pending",
+      default: "Pending",
     },
     tickets:[{
       
