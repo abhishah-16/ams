@@ -1,14 +1,11 @@
 const express = require("express");
 const router = new express.Router();
 const mongoose = require('mongoose')
-const User = require("../models/user");
 const TicketTransaction = require("../models/ticketTransaction");
-const Auditorium = require("../models/auditorium");
 const { authToken, isUser } = require("../middlewares/authRole");
 const AuditoriumBooking = require("../models/auditoriumBooking");
 const time = require("../models/alllSlots.json");
 const { ObjectId } = require("mongodb");
-const { isValidBookingDate } = require("../utils/utils");
 
 router.post("/customer/ticketBookingPayment/:status", [authToken, isUser], async (req, res) => {
   try {
