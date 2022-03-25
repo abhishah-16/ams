@@ -20,7 +20,7 @@ const image = multer({
     }
 })
 
-router.post('/manager/uploadAudiImages/:managerId', image.array('image'), async (req, res) => {
+router.post('/manager/uploadAudiImages/:managerId', isManager ,image.array('image'), async (req, res) => {
 
     try{
         const auditorium = await Auditorium.findOne({manager_id:req.params.managerId})
@@ -38,7 +38,6 @@ router.post('/manager/uploadAudiImages/:managerId', image.array('image'), async 
     }catch(err){
         res.send({error:err.message})
     }
-    
 }, (error, req, res, next) => {
     if (error) res.send({ error: error.message })
 })

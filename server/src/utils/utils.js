@@ -13,13 +13,16 @@ function isValidBookingDate(date) {
 }
 
 function isValidEventUpdateDate(event_date) {
-    var current_date = dateTime.create();
-    var event_date = dateTime.create(event_date)
-
-    current_date = current_date.format('Y-m-d');
-    event_date = event_date.format('Y-m-d');
-    console.log(current_date,event_date)
-    if (current_date < event_date)
+    //var current_date = dateTime.create();
+    let current_date = Date.now()
+    current_date =  new Date(current_date) 
+    //var event_date = dateTime.create(event_date)
+    event_date = new Date(event_date)
+   // current_date = current_date.format('Y-m-d');
+    //event_date = event_date.format('Y-m-d');
+    const diff = (current_date.getTime() - event_date.getTime())/(1000 * 60 * 60 * 24)
+    console.log("date diff : ",diff,current_date,event_date)
+    if (diff > 2)
         return false
 }
 

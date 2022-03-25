@@ -214,4 +214,16 @@ router.post("/customer/eventBookingPayment/:status", [authToken, isUser], async 
   }
 })
 
+router.get("/customer/pastEventBooking",[authToken,isUser],async(req,res)=>{
+  try{
+      const pastEvents = await TicketTransaction.aggregate([
+        {$match:{user_id:req.user._id}}
+        //{$project}
+      ])
+      res.status(200).send(pastEvents)
+  }catch(err){
+    res.status(400).send({error:err.message})
+  }
+})
+
 module.exports = router;
