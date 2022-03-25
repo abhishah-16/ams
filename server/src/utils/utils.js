@@ -28,7 +28,7 @@ function isValidEventUpdateDate(event_date) {
 
 function convertDate(date) {
     var date = dateTime.create(date)
-    date = event_date.format('Y-m-d');
+    date = date.format('Y-m-d');
     return date
 }
 

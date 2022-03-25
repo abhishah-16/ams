@@ -4,6 +4,7 @@ const User = require('../models/user')
 const Auditorium = require('../models/auditorium')
 const { authToken, isAdmin } = require("../middlewares/authRole")
 const { sendVerificationRejectedMail, sendVerificationAcceptedMail } = require("../emails/accounts")
+const TicketTransaction = require("../models/ticketTransaction")
 
 router.get("/admin/managerList", [authToken, isAdmin], async (req, res) => {
     try {
@@ -16,7 +17,7 @@ router.get("/admin/managerList", [authToken, isAdmin], async (req, res) => {
             pendingList.push({manager,auditorium})
         } 
      //const managerList = await  User.aggregate([{$match:{role:"manager",verificationStatus:status}},{$lookup:{from:"auditorium",localField:"_id",foreignField:"manager_id",as:"list"}}])
-        res.status(200).send(pendingList)
+        res.status(200).send({count:pendingList.length,pendingList})
     } catch (err) {
         res.status(400).send(err.message)
     }
@@ -66,5 +67,14 @@ router.get("/admin/adminDashboard", [authToken, isAdmin], async (req, res) => {
     }
 })
 
+router.get("/admin/removeUser:userId",async(req,res)=>{
+    try{
+        const user = await User.findByIdAndRemove(req.params.userId)
+        await TicketTransaction.deleteMany({user_id:req.params.userId})
+        res.status(200).send({message:`User - ${user.name} hase been deleted successfully...`})
+    }catch(err){
+        res.status(400).send({error:err.message})
+    }
+})
 
 module.exports = router
