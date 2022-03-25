@@ -98,7 +98,7 @@ router.post("/organizer/bookAuditorium", [authToken, isOrganizer], async (req, r
         const message = "Please make payment first to confirm your booking."
         res.send({ BookingId: bookedDetails._id, total_cost: bookedDetails.total_cost, message }).status(200)
     } catch (err) {
-        res.send({ error: err.message })
+        res.status(404).send({ error: err.message })
     }
 })
 
