@@ -5,6 +5,43 @@ const Auditorium = require('../models/auditorium')
 const { authToken, isManager } = require("../middlewares/authRole")
 const { sendVerificationRejectedMail, sendVerificationAcceptedMail } = require("../emails/accounts")
 const AuditoriumBooking = require("../models/auditoriumBooking")
+const multer = require("multer")
+const sharp = require('sharp')
+
+const image = multer({
+    limits: {
+        fileSize: 5000000 // less then 5 MB
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            return cb(new Error('Please upload avatar with valid extention'))
+        }
+        cb(undefined, true)
+    }
+})
+
+router.post('/manager/uploadAudiImages/:managerId', image.array('image'), async (req, res) => {
+
+    try{
+        const auditorium = await Auditorium.findOne({manager_id:req.params.managerId})
+        let uploadedImages = []
+         for(let image of req.files){
+            const buffer = await sharp(image.buffer).png().resize({height:250,width:250}).toBuffer()
+            uploadedImages.push({image:buffer})
+            console.log("buffer",buffer)
+         }
+         auditorium.auditoriumImages = uploadedImages
+         console.log("updaye",auditorium)
+       // req.user.avatar = buffer
+        const updatedManager = await auditorium.save()
+        res.send(updatedManager)
+    }catch(err){
+        res.send({error:err.message})
+    }
+    
+}, (error, req, res, next) => {
+    if (error) res.send({ error: error.message })
+})
 
 router.get("/manager/auditoriumDetails", [authToken, isManager], async (req, res) => {
     console.log("manager : ", req.user._id, req.user.name)

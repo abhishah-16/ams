@@ -28,24 +28,22 @@ const AuditoriumSchema = new mongooese.Schema(
         },
         costPerHour:{
             type:Number,
+            //required:true
+        },
+        "auditoriumDescription":{
+            type:String,
             required:true
         },
-        // BookedSlots: [{
-        //     slot: {
-        //         type: Number,
-        //     },
-        //     startTime: {
-        //         type: Number
-        //     },
-        //     endTime: { type: Number },
-        //     status:{type:Boolean}
-        // }
-        // ],
         manager_id: {
             type: mongooese.Schema.Types.ObjectId,
             required: true,
             ref: 'User'
-        }
+        },
+        auditoriumImages:[{
+            image:{
+                type:Buffer
+            }}
+        ]
     }
 )
 const Auditorium = mongooese.model('Auditorium', AuditoriumSchema)

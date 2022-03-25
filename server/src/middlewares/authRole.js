@@ -9,7 +9,6 @@ const authToken = async (req, res, next) => {
         if (!user) {
             throw new Error("User not authorized.")
         }
-
         req.token = token
         req.user = user
     } catch (err) {

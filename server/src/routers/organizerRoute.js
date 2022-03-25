@@ -220,7 +220,7 @@ router.get("/organizer/purchaseHistory", [authToken,isOrganizer],async (req, res
             let  order = req.query.sortBy.split(" ")[1]
             sort = {[sortBy]:Number(order)}
         }
-        
+
         console.log("sort",sort)
         const purchaseHistory = await audiBookingPayment.aggregate([
             { $match:match },

@@ -6,7 +6,8 @@ const Auditorium = require('../models/auditorium')
 const { sendWelcomeMail, sendVerificationPendingMail } = require('../emails/accounts')
 const { authToken, isAdmin, isManagerSignup } = require('../middlewares/authRole')
 
-router.post("/users/signup", isManagerSignup, async (req, res) => {
+
+router.post("/users/signup", isManagerSignup , async (req, res) => {
     console.log("valids fields..")
     const user = new User({
         //...req.body,
@@ -19,7 +20,7 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
     try {
         await user.save()
         const token = await user.generateAuthToken()
-      
+
         if (req.body.role == "manager") {
             const auditorium = new Auditorium({
                 auditoriumName: req.body.audiName,
@@ -27,23 +28,27 @@ router.post("/users/signup", isManagerSignup, async (req, res) => {
                 capacity: req.body.capacity,
                 city: req.body.city,
                 manager_id: user._id,
-                costPerHour:req.body.cost
+                costPerHour: req.body.cost,
+                auditoriumDescription:req.body.auditoriumDescription
             })
+
             await auditorium.save()
-            sendVerificationPendingMail(user.email, user.name)
+            //sendVerificationPendingMail(user.email, user.name)
             return res.status(201).send({ username: user.name, auditoriumname: auditorium.auditoriumName, token })
         }
         req.header.authorization = "Bearer " + token
-        sendWelcomeMail(user.email, user.name)
+        //sendWelcomeMail(user.email, user.name)
         res.status(201).send({ user, token })
     } catch (err) {
-        res.status(400).send({error:err.message})
-        
+        res.status(400).send({ error: err.message })
+
     }
+}, (error, req, res, next) => {
+    if (error) res.send({ error: error.message })
 })
 
 router.post("/users/login", async (req, res) => {
-    console.log("in login",req.body)
+    console.log("in login", req.body)
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password)
         const token = await user.generateAuthToken()
@@ -52,7 +57,7 @@ router.post("/users/login", async (req, res) => {
         res.status(200).send({ user, token })
     } catch (err) {
         //console.log("in login catch")
-        res.status(400).send({error:err.message})
+        res.status(400).send({ error: err.message })
     }
 })
 
