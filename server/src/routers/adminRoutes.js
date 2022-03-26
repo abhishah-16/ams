@@ -8,16 +8,16 @@ const TicketTransaction = require("../models/ticketTransaction")
 
 router.get("/admin/managerList", [authToken, isAdmin], async (req, res) => {
     try {
-        let query = req.query.status ? {verificationStatus:req.query.status,role:"manager"} : {} 
+        let query = req.query.status ? { verificationStatus: req.query.status, role: "manager" } : {}
         const pendingList = []
         const managerList = await User.find(query)
-        for(let manager of managerList){
+        for (let manager of managerList) {
             const auditorium = await Auditorium.find({ manager_id: manager.id })
             delete auditorium._id
-            pendingList.push({manager,auditorium})
-        } 
-     //const managerList = await  User.aggregate([{$match:{role:"manager",verificationStatus:status}},{$lookup:{from:"auditorium",localField:"_id",foreignField:"manager_id",as:"list"}}])
-        res.status(200).send({count:pendingList.length,pendingList})
+            pendingList.push({ manager, auditorium })
+        }
+        //const managerList = await  User.aggregate([{$match:{role:"manager",verificationStatus:status}},{$lookup:{from:"auditorium",localField:"_id",foreignField:"manager_id",as:"list"}}])
+        res.status(200).send({ count: pendingList.length, pendingList })
     } catch (err) {
         res.status(400).send(err.message)
     }
@@ -27,7 +27,7 @@ router.post('/admin/setManagerStatus', [authToken, isAdmin], async (req, res) =>
     try {
         const Updatedmanager = await User.findByIdAndUpdate(req.body.managerId, { verificationStatus: req.body.verificationStatus }, { new: true, runValidators: true })
         if (Updatedmanager) {
-            if (Updatedmanager.verificationStatus=="true")
+            if (Updatedmanager.verificationStatus == "true")
                 sendVerificationAcceptedMail(Updatedmanager.email, Updatedmanager.name)
             else
                 sendVerificationRejectedMail(Updatedmanager.email, Updatedmanager.name)
@@ -67,14 +67,23 @@ router.get("/admin/adminDashboard", [authToken, isAdmin], async (req, res) => {
     }
 })
 
-router.get("/admin/removeUser:userId",async(req,res)=>{
-    try{
+router.get("/admin/removeUser:userId",[authToken,isAdmin], async (req, res) => {
+    try {
         const user = await User.findByIdAndRemove(req.params.userId)
-        await TicketTransaction.deleteMany({user_id:req.params.userId})
-        res.status(200).send({message:`User - ${user.name} hase been deleted successfully...`})
+        await TicketTransaction.deleteMany({ user_id: req.params.userId })
+        res.status(200).send({ message: `User - ${user.name} hase been deleted successfully...` })
+    } catch (err) {
+        res.status(400).send({ error: err.message })
+    }
+})
+
+
+router.get("/admin/allUsers",[authToken,isAdmin],async(req,res)=>{
+    try{
+        const users = await User.find(req.query)
+        res.status(200).send(users)
     }catch(err){
         res.status(400).send({error:err.message})
     }
 })
-
 module.exports = router

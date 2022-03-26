@@ -6,10 +6,11 @@ const { authToken, isUser } = require("../middlewares/authRole");
 const AuditoriumBooking = require("../models/auditoriumBooking");
 const time = require("../models/alllSlots.json");
 const { ObjectId } = require("mongodb");
-const { convertDate } = require("../utils/utils");
-const { query } = require("express");
+const { convertDate, isValidEventUpdateDate } = require("../utils/utils");
+
 
 router.post("/customer/ticketBookingPayment/:status", [authToken, isUser], async (req, res) => {
+
   try {
 
     const event_id = req.body.event_id
@@ -73,6 +74,30 @@ router.post("/customer/ticketBookingPayment/:status", [authToken, isUser], async
   } catch (err) {
     console.log("err", err.message)
     return res.send({ error: err.message })
+  }
+})
+
+
+router.post("/customer/cancleTickets/:ticketId", async (req, res) => {
+  try {
+    if(!isValidEventUpdateDate){
+      res.status(400).send({message:"Can't cancle ticket now"})
+    }
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    try {
+      const ticket = await TicketTransaction.findByIdAndUpdate({_id:req.params.ticketId},{$set:{status:"calncle"}})
+      await AuditoriumBooking.findByIdAndUpdate({ _id: ticket.event_id }, { $inc: { "available_tickets": ticket.tickets.length } })
+      console.log("tikcet", ticket)
+      await session.commitTransaction()
+      res.status(200).send({message:"Ticket deleted"})
+    } catch (err) {
+      await session.abortTransaction()
+      res.status(500).send({ error: err.message })
+    }
+    res.status(200).send(ticket)
+  } catch (err) {
+    res.status(400).send({ error: err.message })
   }
 })
 
@@ -221,6 +246,8 @@ router.post("/customer/ticketBooking", [authToken, isUser], async (req, res) => 
 
 
 
+
+
 router.get("/customer/myEvents", [authToken, isUser], async (req, res) => {
   try {
     let date = Date.now(), match = {}
@@ -230,7 +257,7 @@ router.get("/customer/myEvents", [authToken, isUser], async (req, res) => {
     else match = { $gte: date }
     console.log("match", match)
     const pastEvents = await TicketTransaction.aggregate([
-      { $match: { user_id: req.user._id ,status:"Confirmed"} },
+      { $match: { user_id: req.user._id, status: "Confirmed" } },
       {
         $lookup: {
           "from": 'auditoriumbookings',
@@ -251,12 +278,12 @@ router.get("/customer/myEvents", [authToken, isUser], async (req, res) => {
 router.get("/customer/myTransaction", [authToken, isUser], async (req, res) => {
   try {
     const status = req.query.status
-    let match = {user_id:req.user._id}
-    if(status)
-      match = Object.assign(match,{status})
-    console.log("query",match,status)
+    let match = { user_id: req.user._id }
+    if (status)
+      match = Object.assign(match, { status })
+    console.log("query", match, status)
     const pastEvents = await TicketTransaction.aggregate([
-      { $match: match},
+      { $match: match },
       {
         $lookup: {
           "from": 'auditoriumbookings',
@@ -266,8 +293,8 @@ router.get("/customer/myTransaction", [authToken, isUser], async (req, res) => {
         }
       },
       //{ $project: { updatedAt: 0, createdAt: 0, "event.timeSlots": 0, "event.total_cost": 0, "event.organizer_id": 0, "event.auditorium_id": 0, "event.available_tickets": 0, "event.total_tickets": 0 } },
-      {$project:{_id:1,total_price:1,user_id:1,status:1,"event.event_name":1,createdAt:1,"event._id":1}},
-      {$sort:{createdAt:1}} 
+      { $project: { _id: 1, total_price: 1, user_id: 1, status: 1, "event.event_name": 1, createdAt: 1, "event._id": 1 } },
+      { $sort: { createdAt: 1 } }
     ])
     res.status(200).send(pastEvents)
   } catch (err) {
