@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import M from "materialize-css";
 import NavBar from "../Navbar";
 
 const SignUp = () => {
-  const history = useHistory();
+  const history = useNavigate();
 
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
       <div className="mycard">
         <div className="card auth-card input-field">
           <h3>AMS</h3>
