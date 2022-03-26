@@ -13,7 +13,6 @@ router.post("/customer/ticketBookingPayment/:status", [authToken, isUser], async
 
   try {
 
-    const event_id = req.body.event_id
     const cTrans_id = req.body.cTrans_id
     const amount = req.body.amount
     const sender = req.user._id
@@ -25,7 +24,7 @@ router.post("/customer/ticketBookingPayment/:status", [authToken, isUser], async
     session.startTransaction()
 
     try {
-      const { total_price } = await TicketTransaction.findById(cTrans_id)
+      const { total_price,event_id } = await TicketTransaction.findById(cTrans_id)
 
       if (req.params.status == "Confirmed") {
         console.log("2")
@@ -48,7 +47,7 @@ router.post("/customer/ticketBookingPayment/:status", [authToken, isUser], async
               });
           }
           await TicketTransaction.findByIdAndUpdate(cTrans_id, { status: "Confirmed" })
-          // await bookingConfirmation.save()
+          await AuditoriumBooking.findByIdAndUpdate(event_id,{$inc:{available_tickets:(seat_numbers.length*(-1))}})
           await session.commitTransaction()
           return res.json({ amount, status: req.params.status })
         }
@@ -86,7 +85,7 @@ router.post("/customer/cancleTickets/:ticketId", async (req, res) => {
     const session = await mongoose.startSession()
     session.startTransaction()
     try {
-      const ticket = await TicketTransaction.findByIdAndUpdate({_id:req.params.ticketId},{$set:{status:"calncle"}})
+      const ticket = await TicketTransaction.findByIdAndUpdate({_id:req.params.ticketId},{$set:{status:"cancel"}})
       await AuditoriumBooking.findByIdAndUpdate({ _id: ticket.event_id }, { $inc: { "available_tickets": ticket.tickets.length } })
       console.log("tikcet", ticket)
       await session.commitTransaction()
@@ -242,10 +241,6 @@ router.post("/customer/ticketBooking", [authToken, isUser], async (req, res) => 
 //     res.status(400).send({ error: err.message });
 //   }
 // })
-
-
-
-
 
 router.get("/customer/myEvents", [authToken, isUser], async (req, res) => {
   try {
