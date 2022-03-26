@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import M from "materialize-css";
 import NavBar from "../Navbar";
 import Footer from "../Footer";
 
 const ManagerSignup = () => {
-  const history = useHistory();
+  const history = useNavigate();
   const location = useLocation();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -66,7 +66,7 @@ const ManagerSignup = () => {
 
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
       <div className="mycard">
         <div className="card auth-m-card input-field">
           <h4>Auditoria</h4>
