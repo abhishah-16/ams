@@ -50,7 +50,7 @@ const ticketTranactionSchema = new mongooese.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const TicketTransaction = mongooese.model(

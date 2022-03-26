@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import M from "materialize-css";
 import { UserContext } from "../../App";
 import NavBar from "../Navbar";
 import Footer from "../Footer";
 
 const Login = () => {
-  const history = useHistory();
+  const history = useNavigate();
   const [password, setPasword] = useState("");
   const [email, setEmail] = useState("");
   const PostData = () => {
@@ -50,7 +50,7 @@ const Login = () => {
   };
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
       <div className="mycard">
         <div className="card auth-card input-field">
           <h4>Auditoria</h4>
