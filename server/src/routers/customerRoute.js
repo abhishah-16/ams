@@ -24,7 +24,7 @@ router.post("/customer/ticketBookingPayment/:status", [authToken, isUser], async
     session.startTransaction()
 
     try {
-      const { total_price,event_id } = await TicketTransaction.findById(cTrans_id)
+      const { total_price, event_id } = await TicketTransaction.findById(cTrans_id)
 
       if (req.params.status == "Confirmed") {
         console.log("2")
@@ -47,7 +47,7 @@ router.post("/customer/ticketBookingPayment/:status", [authToken, isUser], async
               });
           }
           await TicketTransaction.findByIdAndUpdate(cTrans_id, { status: "Confirmed" })
-          await AuditoriumBooking.findByIdAndUpdate(event_id,{$inc:{available_tickets:(seat_numbers.length*(-1))}})
+          await AuditoriumBooking.findByIdAndUpdate(event_id, { $inc: { available_tickets: (seat_numbers.length * (-1)) } })
           await session.commitTransaction()
           return res.json({ amount, status: req.params.status })
         }
@@ -79,26 +79,27 @@ router.post("/customer/ticketBookingPayment/:status", [authToken, isUser], async
 
 router.post("/customer/cancleTickets/:ticketId", async (req, res) => {
   try {
-    if(!isValidEventUpdateDate){
-      res.status(400).send({message:"Can't cancle ticket now"})
+    if (!isValidEventUpdateDate) {
+      res.status(400).send({ message: "Can't cancle ticket now" })
     }
     const session = await mongoose.startSession()
     session.startTransaction()
     try {
-      const ticket = await TicketTransaction.findByIdAndUpdate({_id:req.params.ticketId},{$set:{status:"cancel"}})
+      const ticket = await TicketTransaction.findByIdAndUpdate({ _id: req.params.ticketId }, { $set: { status: "cancel" } })
       await AuditoriumBooking.findByIdAndUpdate({ _id: ticket.event_id }, { $inc: { "available_tickets": ticket.tickets.length } })
       console.log("tikcet", ticket)
       await session.commitTransaction()
-      res.status(200).send({message:"Ticket deleted"})
+      res.status(200).send({ message: "Ticket deleted" })
     } catch (err) {
       await session.abortTransaction()
       res.status(500).send({ error: err.message })
     }
     res.status(200).send(ticket)
   } catch (err) {
-    res.status(400).send({ error: err.message })
+    res.status( ).send({ error: err.message })
   }
 });
+
 
 function AllTime(allTimings) {
   time.map((timing) => allTimings.push(timing.time));
@@ -152,36 +153,6 @@ router.get("/customer/allEvents", [authToken, isUser], async (req, res) => {
   }
 });
 
-// router.post('/event_booking',[authToken,isUser],async(req,res)=>{
-//     try{
-
-//         const ticket = new Ticket({
-//             seat_no:req.body.seat_no,
-//             t_price:req.body.price,
-//             event_id:req.body.event_id,
-//             user_id:req.user._id,
-
-//         })
-//         await ticket.save();
-//         res.send(ticket);
-//     }catch (err) {
-//         res.send({ error: err.message })
-//     }
-
-// })
-
-// var objFriends = { fname:"fname",lname:"lname",surname:"surname" };
-// Friend.findOneAndUpdate(
-//    { _id: req.body.id },
-//    { $push: { friends: objFriends  } },
-//   function (error, success) {
-//         if (error) {
-//             console.log(error);
-//         } else {
-//             console.log(success);
-//         }
-//     });
-// )
 
 router.post("/customer/ticketBooking", [authToken, isUser], async (req, res) => {
 

@@ -1,7 +1,4 @@
 {
-  "//Work by Jay Patel ":"General API, Customer API, Admin API",
-  "//Work by Ajay Pipaliya ":"General API, Manager API, Organizer API",
-  
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",

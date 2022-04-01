@@ -132,7 +132,7 @@ router.post("/organizer/audiBookingPayment/:status", [authToken, isOrganizer], a
                     await session.commitTransaction()
                     return res.json({ amount, status: bookingConfirmation.status })
                 }
-            }
+            } 
             else {
                 console.log("falied payment")
                 await AuditoriumBooking.findByIdAndDelete(event_id)
@@ -142,7 +142,8 @@ router.post("/organizer/audiBookingPayment/:status", [authToken, isOrganizer], a
                 return res.json({ amount, status: bookingConfirmation.status, message: "Booking has been cancel" })
             }
         } catch (err) {
-            const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "Pending" })
+
+            const bookingConfirmation = new AudiBookingPayment({ user_id: sender, event_id, amount, status: "False" })
             await bookingConfirmation.save()
             console.log("in abort :", err.message)
             await session.abortTransaction()
@@ -206,25 +207,24 @@ router.patch(('/organizer/update/eventDetails/:eventId'), [authToken, isOrganize
 })
 
 
-router.get("/organizer/purchaseHistory", [authToken,isOrganizer],async (req, res) => {
+router.get("/organizer/purchaseHistory", [authToken, isOrganizer], async (req, res) => {
 
     try {
-        let match = {user_id: req.user._id }
+        let match = { user_id: req.user._id }
         let sort = {}
-        if(req.query.status)
-        Object.assign(match,{status:req.query.status})
+        if (req.query.status)
+            Object.assign(match, { status: req.query.status })
         console.log(match)
-        if(req.query.sortBy)
-        {
+        if (req.query.sortBy) {
             let sortBy = req.query.sortBy.split(" ")[0]
-            let  order = req.query.sortBy.split(" ")[1]
-            sort = {[sortBy]:Number(order)}
+            let order = req.query.sortBy.split(" ")[1]
+            sort = { [sortBy]: Number(order) }
         }
 
-        console.log("sort",sort)
+        console.log("sort", sort)
         const purchaseHistory = await audiBookingPayment.aggregate([
-            { $match:match },
-            {$sort:sort}
+            { $match: match },
+            { $sort: sort }
         ])
         res.status(200).send(purchaseHistory)
     } catch (err) {
