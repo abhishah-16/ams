@@ -96,7 +96,7 @@ router.post("/customer/cancleTickets/:ticketId", async (req, res) => {
     }
     res.status(200).send(ticket)
   } catch (err) {
-    res.status( ).send({ error: err.message })
+    res.status().send({ error: err.message })
   }
 });
 

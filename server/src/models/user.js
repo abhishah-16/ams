@@ -61,6 +61,9 @@ const userSchema = new mongooese.Schema(
                 required: true
             }
         }]
+    },
+    {
+        timestamps:true
     }
 )
 

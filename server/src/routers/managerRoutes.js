@@ -20,23 +20,23 @@ const image = multer({
     }
 })
 
-router.post('/manager/uploadAudiImages/:managerId', isManager ,image.array('image'), async (req, res) => {
+router.post('/manager/uploadAudiImages/:managerId', isManager, image.array('image'), async (req, res) => {
 
-    try{
-        const auditorium = await Auditorium.findOne({manager_id:req.params.managerId})
+    try {
+        const auditorium = await Auditorium.findOne({ manager_id: req.params.managerId })
         let uploadedImages = []
-         for(let image of req.files){
-            const buffer = await sharp(image.buffer).png().resize({height:250,width:250}).toBuffer()
-            uploadedImages.push({image:buffer})
-            console.log("buffer",buffer)
-         }
-         auditorium.auditoriumImages = uploadedImages
-         console.log("updaye",auditorium)
-       // req.user.avatar = buffer
+        for (let image of req.files) {
+            const buffer = await sharp(image.buffer).png().resize({ height: 250, width: 250 }).toBuffer()
+            uploadedImages.push({ image: buffer })
+            console.log("buffer", buffer)
+        }
+        auditorium.auditoriumImages = uploadedImages
+        console.log("updaye", auditorium)
+        // req.user.avatar = buffer
         const updatedManager = await auditorium.save()
         res.send(updatedManager)
-    }catch(err){
-        res.send({error:err.message})
+    } catch (err) {
+        res.send({ error: err.message })
     }
 }, (error, req, res, next) => {
     if (error) res.send({ error: error.message })
